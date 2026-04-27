@@ -1,4 +1,5 @@
-import { useRouter } from 'expo-router';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Link, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
     View,
@@ -25,6 +26,8 @@ export default function CadastroPage() {
 
     const router = useRouter()
 
+    const [mostrarSenha, setMostrarSenha] = useState(false)
+
     return (
         <View style={style.fundo}>
             <View style={style.bolaTopo} />
@@ -49,6 +52,12 @@ export default function CadastroPage() {
                             value={email}
                             onChangeText={setEmail}
                         ></TextInput>
+
+                        <MaterialCommunityIcons
+                            name="account"
+                            size={22}
+                            color="#000000"
+                        />
                     </View>
 
                     <View style={style.inputArea}>
@@ -58,6 +67,12 @@ export default function CadastroPage() {
                             value={cpf}
                             onChangeText={setCpf}
                         ></TextInput>
+
+                        <MaterialCommunityIcons
+                            name="account"
+                            size={22}
+                            color="#000000"
+                        />
                     </View>
 
                     <View style={style.inputArea}>
@@ -67,6 +82,12 @@ export default function CadastroPage() {
                             value={rm}
                             onChangeText={setRm}
                         ></TextInput>
+
+                        <MaterialCommunityIcons
+                            name="account"
+                            size={22}
+                            color="#000000"
+                        />
                     </View>
 
                     <View style={style.inputArea}>
@@ -76,6 +97,12 @@ export default function CadastroPage() {
                             value={nome}
                             onChangeText={setNome}
                         ></TextInput>
+
+                        <MaterialCommunityIcons
+                            name="account"
+                            size={22}
+                            color="#000000"
+                        />
                     </View>
 
                     <View style={style.inputArea}>
@@ -85,6 +112,12 @@ export default function CadastroPage() {
                             value={telefone}
                             onChangeText={setTelefone}
                         ></TextInput>
+
+                        <MaterialCommunityIcons
+                            name="account"
+                            size={22}
+                            color="#000000"
+                        />
                     </View>
 
                     <View style={style.inputArea}>
@@ -94,6 +127,12 @@ export default function CadastroPage() {
                             value={curso}
                             onChangeText={setCurso}
                         ></TextInput>
+
+                        <MaterialCommunityIcons
+                            name="account"
+                            size={22}
+                            color="#000000"
+                        />
                     </View>
 
                     <View style={style.inputArea}>
@@ -119,11 +158,19 @@ export default function CadastroPage() {
                         <TextInput
                             style={style.input}
                             placeholder="Confirmar Senha"
-                            secureTextEntry={true}
                             value={confirmarSenha}
                             onChangeText={setConfirmarSenha}
+                            secureTextEntry={!mostrarSenha}
                         >
                         </TextInput>
+
+                        <TouchableOpacity onPress={() => setMostrarSenha(prev => !prev)}>
+                            <MaterialCommunityIcons
+                                name={mostrarSenha ? "eye-off" : "eye"}
+                                size={24}
+                                color="#333"
+                            />
+                        </TouchableOpacity>
                     </View>
 
                     <TouchableOpacity
@@ -134,16 +181,16 @@ export default function CadastroPage() {
                     </TouchableOpacity>
 
                     <View style={style.loginContainer}>
+
                         <Text>Já possui o cadastro? </Text>
-                        <TouchableOpacity onPress={() => console.log("Ir para login")}></TouchableOpacity>
-                        <Text style={style.textoLogin}>Logar</Text>
+                        <Link href={"/"}><Text style={style.textoLogin}>Logar</Text></Link>
+
                     </View>
 
-
-
-
                 </View>
+
             </ScrollView>
+
         </View>
     )
 
@@ -238,11 +285,12 @@ const style = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "center",
         marginTop: 15,
+        gap: 4,
     },
     textoLogin: {
         color: "#E91E8C",
         fontWeight: "bold",
-        
+
     },
     logo: {
         width: 160,
