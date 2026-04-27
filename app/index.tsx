@@ -19,9 +19,10 @@ export default function Index() {
       <View style={style.bolaTopo} />
       <View style={style.bolaBaixo} />
 
-      <ScrollView contentContainerStyle={style.scrollContainer}>
+      <Image source={require("../assets/images/logo.png")}
+      style={style.logo}></Image>
 
-        <Image source={require("../assets/images/logo.png")} style={style.logo}></Image>
+      <ScrollView contentContainerStyle={style.scrollContainer}>
 
         <View style={style.card}>
 
@@ -46,7 +47,6 @@ export default function Index() {
               size={22}
               color="#000000"
             />
-            
           </View>
 
           <View style={style.inputArea}>
@@ -117,8 +117,8 @@ const style = StyleSheet.create({
   },
 
   scrollContainer: {
-    paddingTop: 60,
-    paddingBottom: 40,
+    flexGrow: 1,
+    justifyContent: "center",
     alignItems: "center",
   },
 
@@ -131,6 +131,7 @@ const style = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 10,
     elevation: 5,
+    marginBottom: 100,
   },
 
   titulo: {
@@ -156,6 +157,8 @@ const style = StyleSheet.create({
   logo: {
     width: 160,
     height: 50,
+    alignSelf: "center",
+    marginTop: 60,
   },
 
   logoInline: {
