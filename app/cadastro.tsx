@@ -208,7 +208,7 @@ const style = StyleSheet.create({
         width: 200,
         height: 200,
         borderRadius: 100,
-        backgroundColor: "#E91E8C",
+        backgroundColor: "#e01a5f",
     },
     bolaBaixo: {
         position: "absolute",
@@ -217,10 +217,10 @@ const style = StyleSheet.create({
         width: 250,
         height: 250,
         borderRadius: 125,
-        backgroundColor: "#E91E8C",
+        backgroundColor: "#e01a5f",
     },
     scrollContainer: {
-        paddingTop: 60,
+        paddingTop: 30,
         paddingBottom: 40,
         alignItems: "center"
     },
@@ -233,6 +233,7 @@ const style = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 10,
         elevation: 5,
+        marginTop: 30,
     },
     titulo: {
         fontSize: 22,
@@ -270,7 +271,7 @@ const style = StyleSheet.create({
         color: "#333",
     },
     botao: {
-        backgroundColor: "#E91E8C",
+        backgroundColor: "#e01a5f",
         paddingVertical: 12,
         borderRadius: 25,
         alignItems: "center",
@@ -288,7 +289,7 @@ const style = StyleSheet.create({
         gap: 4,
     },
     textoLogin: {
-        color: "#E91E8C",
+        color: "#e01a5f",
         fontWeight: "bold",
 
     },

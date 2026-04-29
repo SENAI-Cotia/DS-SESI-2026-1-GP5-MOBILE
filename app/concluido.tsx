@@ -46,7 +46,7 @@ const style = StyleSheet.create({
         width: 200,
         height: 200,
         borderRadius: 100,
-        backgroundColor: "#E91E8C",
+        backgroundColor: "#e01a5f",
     },
     bolaBaixo: {
         position: "absolute",
@@ -55,7 +55,7 @@ const style = StyleSheet.create({
         width: 250,
         height: 250,
         borderRadius: 125,
-        backgroundColor: "#E91E8C",
+        backgroundColor: "#e01a5f",
     },
     logoContainer: {
         position: "absolute",
@@ -91,7 +91,7 @@ const style = StyleSheet.create({
         marginBottom: 30,
     },
     botao: {
-        backgroundColor: "#E91E8C",
+        backgroundColor: "#e01a5f",
         paddingVertical: 12,
         width: "100%",
         borderRadius: 25,
