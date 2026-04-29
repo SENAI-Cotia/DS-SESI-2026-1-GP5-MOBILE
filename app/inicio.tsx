@@ -1,7 +1,7 @@
 import { useRouter } from "expo-router"
 import { useState } from "react"
 import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
-
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
 export default function PaginaInicio() {
 
     const router = useRouter()
