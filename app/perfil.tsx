@@ -1,16 +1,15 @@
-import * as ImagePicker from 'expo-image-picker';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
 import { Link, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-    View,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    StyleSheet,
     Dimensions,
+    Image,
     ScrollView,
-    Image
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View
 } from 'react-native';
 
 const { width } = Dimensions.get('window');
@@ -30,7 +29,7 @@ export default function PerfilPage() {
         }
     };
 
-    const [foto, setFoto] = useState(null)
+    const [foto, setFoto] = useState("")
 
     const router = useRouter()
 
@@ -65,7 +64,7 @@ export default function PerfilPage() {
 
                 <View style={style.card}>
 
-                    <TouchableOpacity
+                    <Link href={"/"}
                         style={style.botao}
                         onPress={() => router.push("/")}
                     >
@@ -81,9 +80,9 @@ export default function PerfilPage() {
                             Configurações da minha conta
                         </Text>
 
-                    </TouchableOpacity>
+                    </Link>
 
-                    <TouchableOpacity
+                    <Link href={"/"}
                         style={style.botao}
                         onPress={() => router.push("/")}
                     >
@@ -95,23 +94,23 @@ export default function PerfilPage() {
                         />
 
                         <Text style={style.textoBotao}>Acessibilidade</Text>
-                    </TouchableOpacity>
+                    </Link>
 
-                    <TouchableOpacity
-                        style={style.botao}
-                        onPress={() => router.push("/")}
-                    >
-                        <MaterialCommunityIcons
-                            name="restart"
-                            size={20}
-                            color="#ffffff"
-                            style={{ marginLeft: 20 }}
-                        />
+                    <Link href={"/ultimasCompras"}
+                            style={style.botao}
+                            onPress={() => router.push("/")}>
 
-                        <Text style={style.textoBotao}>Últimas Compras</Text>
-                    </TouchableOpacity>
+                            <MaterialCommunityIcons
+                                name="restart"
+                                size={20}
+                                color="#ffffff"
+                                style={{ marginLeft: 20 }}
+                            />
 
-                    <TouchableOpacity
+                            <Text style={style.textoBotao}>Últimas Compras</Text>
+                    </Link>
+
+                    <Link href={"/"}
                         style={style.botao}
                         onPress={() => router.push("/")}
                     >
@@ -122,9 +121,9 @@ export default function PerfilPage() {
                             style={{ marginLeft: 20 }}
                         />
                         <Text style={style.textoBotao}>Itens à venda</Text>
-                    </TouchableOpacity>
+                    </Link>
 
-                    <TouchableOpacity
+                    <Link href={"/"}
                         style={style.botao}
                         onPress={() => router.push("/")}
                     >
@@ -135,13 +134,13 @@ export default function PerfilPage() {
                             style={{ marginLeft: 20 }}
                         />
                         <Text style={style.textoBotao}>Central de ajuda</Text>
-                    </TouchableOpacity>
+                    </Link>
 
                 </View>
 
-            </ScrollView>
+            </ScrollView >
 
-        </View>
+        </View >
     )
 
 }
@@ -223,7 +222,7 @@ const style = StyleSheet.create({
         backgroundColor: "#e01a5f",
         paddingVertical: 12,
         borderRadius: 25,
-        alignItems: "left",
+        alignItems: "flex-start",
         marginTop: 10,
         flexDirection: "row",
     },
