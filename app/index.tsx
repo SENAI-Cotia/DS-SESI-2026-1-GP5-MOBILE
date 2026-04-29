@@ -79,6 +79,7 @@ export default function Index() {
             <Text>Não possui cadastro?</Text>
 
             <Link href={"/cadastro"}><Text style={style.textoCadastro}>Me Cadastrar</Text></Link>
+            <Link href={"/perfil"}><Text style={style.textoCadastro}>Perfil</Text></Link>
 
           </View>
 
@@ -103,7 +104,7 @@ const style = StyleSheet.create({
     width: 200,
     height: 200,
     borderRadius: 100,
-    backgroundColor: "#E91E8C",
+    backgroundColor: "#e01a5f",
   },
 
   bolaBaixo: {
@@ -113,7 +114,7 @@ const style = StyleSheet.create({
     width: 250,
     height: 250,
     borderRadius: 125,
-    backgroundColor: "#E91E8C",
+    backgroundColor: "#e01a5f",
   },
 
   scrollContainer: {
@@ -132,6 +133,7 @@ const style = StyleSheet.create({
     shadowRadius: 10,
     elevation: 5,
     marginBottom: 100,
+    marginTop: 30,
   },
 
   titulo: {
@@ -158,7 +160,7 @@ const style = StyleSheet.create({
     width: 160,
     height: 50,
     alignSelf: "center",
-    marginTop: 60,
+    marginTop: 30,
   },
 
   logoInline: {
@@ -183,7 +185,7 @@ const style = StyleSheet.create({
   },
 
   botao: {
-    backgroundColor: "#E91E8C",
+    backgroundColor: "#e01a5f",
     paddingVertical: 12,
     borderRadius: 25,
     alignItems: "center",
@@ -204,7 +206,7 @@ const style = StyleSheet.create({
   },
 
   textoCadastro: {
-    color: "#E91E8C",
+    color: "#e01a5f",
     fontWeight: "bold",
   },
 
