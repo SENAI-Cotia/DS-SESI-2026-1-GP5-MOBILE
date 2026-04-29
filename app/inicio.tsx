@@ -31,26 +31,32 @@ export default function PaginaInicio() {
     return (
 
         <View style={style.fundo}>
-            <View style={style.header}>
-                <TouchableOpacity><Text style={style.iconTop}>+</Text></TouchableOpacity>
-                <Image source={require("../assets/images/logo.png")} style={style.logo}></Image>
+            <View style={style.bolaFundo} />
 
-                <TouchableOpacity><Text style={style.iconTop}>🔔</Text></TouchableOpacity>
-            </View>
+            <ScrollView contentContainerStyle={style.scrollContainer} showsHorizontalScrollIndicator={false}>
 
-            <View style={style.buscaContainer}>
-                <TextInput
-                    style={style.inputBusca}
-                    placeholder="calculadora científica..."
-                    placeholderTextColor="#dbcece"
-                    value={busca}
-                    onChangeText={setBusca}
-                />
-                <Text style={style.iconBusca}>🔍</Text>
-            </View>
+                <View style={style.header}>
 
-            <ScrollView contentContainerStyle={style.scrollContainer}>
-                <View style={style.bolaFundo} />
+                    <TouchableOpacity><Ionicons name="add" size={30} color="#ffffff" /></TouchableOpacity>
+                    <Image source={require("../assets/images/logo.png")} style={style.logo}></Image>
+
+                    <TouchableOpacity><Ionicons name="notifications-outline" size={26} color="#E91E8C" /></TouchableOpacity>
+                </View>
+
+
+                <View style={style.buscaContainer}>
+                    <TextInput
+                        style={style.inputBusca}
+                        placeholder="calculadora científica..."
+                        placeholderTextColor="#dbcece"
+                        value={busca}
+                        onChangeText={setBusca}
+                    />
+                    <Ionicons name="search" size={20} color="#fff" />
+                </View>
+
+
+                <br />
 
                 {posts.map((post) => (
                     <View key={post.id} style={style.card}>
@@ -74,7 +80,7 @@ export default function PaginaInicio() {
                                 style={style.imagemProduto}
                                 resizeMode="cover"
                             />
-                            <TouchableOpacity style={style.setaDireita}><Text style={{ color: '#E91E8C' }}>▶</Text></TouchableOpacity>
+                            <TouchableOpacity style={style.setaDireita}><Ionicons name="chevron-forward" size={20} color="#E91E8C" /></TouchableOpacity>
                         </View>
 
                         <TouchableOpacity style={style.botaoVerMais}>
@@ -85,18 +91,18 @@ export default function PaginaInicio() {
             </ScrollView>
 
             <View style={style.menuInferior}>
-                <TouchableOpacity style={style.menuItem}><Text style={style.iconMenu}>👥</Text></TouchableOpacity>
+                <TouchableOpacity style={style.menuItem}><Ionicons name="people-outline" size={30} color="#fff" /></TouchableOpacity>
 
                 <View style={style.homeCirculo}>
                     <TouchableOpacity
                         style={style.homeBotao}
                         onPress={() => router.push("/inicio")}
                     >
-                        <Text style={style.iconHome}>🏠</Text>
+                        <Ionicons name="home" size={32} color="#fff" />
                     </TouchableOpacity>
                 </View>
 
-                <TouchableOpacity style={style.menuItem}><Text style={style.iconMenu}>👤</Text></TouchableOpacity>
+                <TouchableOpacity style={style.menuItem}><Ionicons name="person-outline" size={30} color="#fff" /></TouchableOpacity>
             </View>
         </View>
     )
@@ -112,8 +118,8 @@ const style = StyleSheet.create({
         justifyContent: "space-between",
         alignItems: "center",
         paddingHorizontal: 20,
-        paddingTop: 50,
-        backgroundColor: "#fff"
+        paddingTop: 10,
+
     },
     iconTop: {
         fontSize: 24,
@@ -151,14 +157,14 @@ const style = StyleSheet.create({
     },
     bolaFundo: {
         position: "absolute",
-        top: -20,
-        left: -30,
-        width: 200,
-        height: 150,
+        top: 30,
+        left: -40,
+        width: 250,
+        height: 180,
         backgroundColor: "#E91E8C",
-        borderRadius: 50,
-        transform: [{ rotate: "-20deg" }],
-        opacity: 0.9
+        borderRadius: 60,
+        transform: [{ rotate: "-15deg" }],
+        zIndex: 0
     },
     card: {
         backgroundColor: "#e6dada",
