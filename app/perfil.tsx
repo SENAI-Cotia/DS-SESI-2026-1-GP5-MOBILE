@@ -1,4 +1,4 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons , MaterialCommunityIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { Link, useRouter } from 'expo-router';
 import React, { useState } from 'react';
@@ -38,12 +38,19 @@ export default function PerfilPage() {
             <View style={style.bolaTopo} />
             <View style={style.bolaBaixo} />
 
+            <TouchableOpacity 
+        style={style.botaoVoltar} 
+        onPress={() => router.back()}
+      >
+        <Ionicons name="chevron-back" size={30} color="#fff" />
+      </TouchableOpacity>
+
 
             <ScrollView contentContainerStyle={style.scrollContainer}>
 
                 <View style={style.headerPerfil}>
 
-                    <Text style={style.titulo}>Olá [nome]</Text>
+                    <Text style={style.titulo}>      Olá [nome]</Text>
 
                     <View style={style.fotoContainer}>
                         <Image
@@ -168,6 +175,12 @@ const style = StyleSheet.create({
         borderRadius: 125,
         backgroundColor: "#e01a5f",
     },
+    botaoVoltar: {
+    position: "absolute",
+    top: 50,
+    left: 20,
+    zIndex: 20,
+  },
     scrollContainer: {
         paddingTop: 30,
         paddingBottom: 40,
