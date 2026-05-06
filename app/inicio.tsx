@@ -133,7 +133,7 @@ const style = StyleSheet.create({
     },
     iconTop: {
         fontSize: 24,
-        color: "#E91E8C",
+        color: "#e01a5f",
         fontWeight: "bold"
     },
     logo: {
@@ -141,7 +141,7 @@ const style = StyleSheet.create({
         height: 50,
     },
     buscaContainer: {
-        backgroundColor: "#E91E8C",
+        backgroundColor: "#e01a5f",
         marginHorizontal: 20,
         marginTop: 15,
         borderRadius: 25,
@@ -171,7 +171,7 @@ const style = StyleSheet.create({
         left: -40,
         width: 250,
         height: 180,
-        backgroundColor: "#E91E8C",
+        backgroundColor: "#e01a5f",
         borderRadius: 60,
         transform: [{ rotate: "-15deg" }],
         zIndex: 0
@@ -200,7 +200,7 @@ const style = StyleSheet.create({
     nomePerfil: {
         fontSize: 16,
         fontWeight: "bold",
-        color: "#E91E8C"
+        color: "#e01a5f"
     },
     cursoPerfil: {
         fontSize: 12,
@@ -246,7 +246,7 @@ const style = StyleSheet.create({
         elevation: 3
     },
     botaoVerMais: {
-        backgroundColor: "#E91E8C",
+        backgroundColor: "#e01a5f",
         alignSelf: "center",
         paddingHorizontal: 30,
         paddingVertical: 6,
@@ -263,7 +263,7 @@ const style = StyleSheet.create({
         bottom: 0,
         width: "100%",
         height: 70,
-        backgroundColor: "#E91E8C",
+        backgroundColor: "#e01a5f",
         flexDirection: "row",
         justifyContent: "space-around",
         alignItems: "center",
@@ -281,7 +281,7 @@ const style = StyleSheet.create({
         width: 80,
         height: 80,
         borderRadius: 40,
-        backgroundColor: "#E91E8C",
+        backgroundColor: "#e01a5f",
         marginTop: -40,
         justifyContent: "center",
         alignItems: "center"
@@ -290,7 +290,7 @@ const style = StyleSheet.create({
         width: 65,
         height: 65,
         borderRadius: 32.5,
-        backgroundColor: "#E91E8C",
+        backgroundColor: "#e01a5f",
         justifyContent: "center",
         alignItems: "center",
         elevation: 5
