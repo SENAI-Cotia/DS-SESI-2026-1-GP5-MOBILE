@@ -110,7 +110,7 @@ export default function PerfilPage() {
                             <Text style={style.textoBotao}>Últimas Compras</Text>
                     </Link>
 
-                    <Link href={"/"}
+                    <Link href={"/itensAVenda"}
                         style={style.botao}
                         onPress={() => router.push("/")}
                     >
