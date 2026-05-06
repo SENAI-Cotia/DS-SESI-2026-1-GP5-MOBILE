@@ -110,7 +110,7 @@ export default function PerfilPage() {
                             <Text style={style.textoBotao}>Últimas Compras</Text>
                     </Link>
 
-                    <Link href={"/"}
+                    <Link href={"/itensAVenda"}
                         style={style.botao}
                         onPress={() => router.push("/")}
                     >
@@ -169,9 +169,9 @@ const style = StyleSheet.create({
         backgroundColor: "#e01a5f",
     },
     scrollContainer: {
-        paddingTop: 30,
-        paddingBottom: 40,
-        alignItems: "center"
+        flexGrow: 1,
+        justifyContent: "center",
+        alignItems: "center",
     },
     card: {
         backgroundColor: "#fff",
@@ -187,6 +187,7 @@ const style = StyleSheet.create({
         fontSize: 22,
         fontWeight: "bold",
         textAlign: "center",
+
     },
     subtitulo: {
         fontSize: 13,

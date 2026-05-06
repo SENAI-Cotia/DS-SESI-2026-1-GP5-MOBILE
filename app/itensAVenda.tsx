@@ -1,47 +1,35 @@
+import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
+import { Link, router } from "expo-router";
 import { Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const ultimasCompras = [
+const itensAVenda = [
     {
         id: 1,
-        title: "Kit Profissional De Desenho De Metal Com 16 Peças - Geometria",
-        preco: 75,
-        image: "https://http2.mlstatic.com/D_Q_NP_601127-MLB91214650285_082025-F-kit-profissional-de-desenho-de-metal-com-16-pecas-geometria.webp",
+        title: "Kit Conjunto para Desenho Geométrico - Acrilex 10 Peças",
+        preco: 45,
+        image: "https://www.armarinhosaojose.com.br/octopus/design/images/94/products/b/conjunto-desenho-geom-acrilex-10pcs.jpg",
         situacao: "Entregue"
     },
     {
         id: 2,
-        title: "Cálculo Numérico - Aprendizagem Com Apoio De Software",
-        preco: 30,
-        image: "https://m.media-amazon.com/images/I/91u8wQS2G6L._SY342_.jpg",
+        title: "Jaleco Manga Longa pra Laboratório",
+        preco: 15,
+        image: "https://http2.mlstatic.com/D_NQ_NP_2X_679505-MLB96163273472_102025-F-jaleco-de-oxford-branco-com-gola-manga-longa-3-bolsos.webp",
         situacao: "À Venda"
     },
     {
         id: 3,
-        title: "Calculadora Científica Casio FX-82MS 240",
-        preco: 50,
-        image: "https://http2.mlstatic.com/D_NQ_NP_2X_856555-MLA99937166205_112025-F.webp",
-        situacao: "Entregue"
-    },
-    {
-        id: 4,
-        title: "Matemática Para O Ensino Médio - Caderno De Atividades 2 Ano Vol. 1",
+        title: "Conexões com a Matemática",
         preco: 25,
-        image: "https://images.tcdn.com.br/img/img_prod/937309/matematica_para_o_ensino_medio_caderno_de_atividades_2_ano_vol_01_34759_1_bad8ac1d9b72172555f9ab8236776e08.jpg",
-        situacao: "Entregue"
-    },
-    {
-        id: 5,
-        title: "Bolo de Pote - Ninho com Morango e Brigadeiro",
-        preco: 10,
-        image: "https://www.receiteria.com.br/wp-content/uploads/bolo-de-pote-de-chocolate-com-morango-fit-1-730x730.jpg",
-        situacao: "Entregue"
+        image: "https://m.media-amazon.com/images/I/61AB9jiPgGL._AC_UF1000,1000_QL80_.jpg",
+        situacao: "À Venda"
     },
 ];
 
 const { width } = Dimensions.get("window")
 
-export default function ultimascompras() {
+export default function itensaVenda() {
     return (
         <SafeAreaView style={style.fundo}>
             <View style={style.bolaTopo}></View>
@@ -50,19 +38,35 @@ export default function ultimascompras() {
             <ScrollView showsHorizontalScrollIndicator={false}>
 
                 <View>
-                    <Text style={style.principal}>Últimas Compras</Text>
+                    <Text style={style.principal}>Itens à Venda</Text>
                 </View>
 
 
                 <View style={style.container}>
-                    {ultimasCompras.map((ultimaCompra) => (
+                    {itensAVenda.map((itenAVenda) => (
                         <View
-                            key={ultimaCompra.id}
+                            key={itenAVenda.id}
                             style={[
                                 style.card,
-                                ultimaCompra.situacao.toLowerCase().includes("venda") && style.cardAndamento
+                                itenAVenda.situacao.toLowerCase().includes("venda") && style.cardAndamento
                             ]}
                         >
+                            <TouchableOpacity
+                                style={style.iconeEditar}
+                                onPress={() => console.log("Editar item", itenAVenda.id)}
+                            >
+                                <Link href={"/"}>
+                                    <MaterialCommunityIcons
+                                        name="pencil"
+                                        size={20}
+                                        color={
+                                            itenAVenda.situacao.toLowerCase().includes("venda")
+                                                ? "#000"   // À venda → preto
+                                                : "#fff"   // Entregue → branco
+                                        }
+                                    />
+                                </Link>
+                            </TouchableOpacity>
 
                             <View>
 
@@ -70,38 +74,39 @@ export default function ultimascompras() {
 
                                     <Image
                                         style={style.imagem}
-                                        source={{ uri: ultimaCompra.image }}
+                                        source={{ uri: itenAVenda.image }}
                                     />
 
                                     <View style={style.conteudo}>
                                         <Text
                                             style={[
                                                 style.title,
-                                                ultimaCompra.situacao.toLowerCase().includes("venda") && style.titleVenda
+                                                itenAVenda.situacao.toLowerCase().includes("venda") && style.titleVenda
                                             ]}
                                         >
-                                            {ultimaCompra.title}
+                                            {itenAVenda.title}
                                         </Text>
+                                        <br></br>
                                         <br></br>
 
                                         <View style={style.infos}>
                                             <Text
                                                 style={[
                                                     style.preco,
-                                                    ultimaCompra.situacao.toLowerCase().includes("venda") && style.infoVenda
+                                                    itenAVenda.situacao.toLowerCase().includes("venda") && style.infoVenda
                                                 ]}
                                             >
                                                 R$
-                                                {ultimaCompra.preco}
+                                                {itenAVenda.preco}
                                             </Text>
 
                                             <Text
                                                 style={[
                                                     style.situacao,
-                                                    ultimaCompra.situacao.toLowerCase().includes("venda") && style.infoVenda
+                                                    itenAVenda.situacao.toLowerCase().includes("venda") && style.infoVenda
                                                 ]}
                                             >
-                                                {ultimaCompra.situacao}
+                                                {itenAVenda.situacao}
                                             </Text>
                                         </View>
                                     </View>
@@ -114,10 +119,24 @@ export default function ultimascompras() {
                     ))}
                 </View>
 
-
             </ScrollView>
 
-        </SafeAreaView>
+            <View style={style.menuInferior}>
+                <TouchableOpacity style={style.menuItem}><Ionicons name="people-outline" size={30} color="#fff" /></TouchableOpacity>
+
+                <View style={style.homeCirculo}>
+                    <TouchableOpacity
+                        style={style.homeBotao}
+                        onPress={() => router.push("/")}
+                    >
+                        <Ionicons name="home" size={32} color="#fff" />
+                    </TouchableOpacity>
+                </View>
+
+                <TouchableOpacity style={style.menuItem}><Ionicons name="person-outline" size={30} color="#fff" /></TouchableOpacity>
+            </View>
+            
+        </SafeAreaView >
 
     )
 }
@@ -128,6 +147,42 @@ const style = StyleSheet.create({
         flex: 1,
         backgroundColor: "#fff",
     },
+
+    menuInferior: {
+        position: "absolute",
+        bottom: 0,
+        width: "100%",
+        height: 70,
+        backgroundColor: "#e01a5f",
+        flexDirection: "row",
+        justifyContent: "space-around",
+        alignItems: "center",
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+    },
+    menuItem: {
+        padding: 10
+    },
+
+    homeCirculo: {
+        width: 80,
+        height: 80,
+        borderRadius: 40,
+        backgroundColor: "#e01a5f",
+        marginTop: -40,
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    homeBotao: {
+        width: 65,
+        height: 65,
+        borderRadius: 32.5,
+        backgroundColor: "#e01a5f",
+        justifyContent: "center",
+        alignItems: "center",
+        elevation: 5
+    },
+
     bolaTopo: {
         position: "absolute",
         top: -50,
@@ -223,5 +278,11 @@ const style = StyleSheet.create({
     infoVenda: {
         color: "#6d505a",
     },
-    
+
+    iconeEditar: {
+        position: "absolute",
+        top: 25,
+        right: 25,
+        zIndex: 1,
+    },
 });
