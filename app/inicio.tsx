@@ -80,7 +80,9 @@ export default function PaginaInicio() {
                                 style={style.imagemProduto}
                                 resizeMode="cover"
                             />
-                            <TouchableOpacity style={style.setaDireita}><Ionicons name="chevron-forward" size={20} color="#E91E8C" /></TouchableOpacity>
+                            <TouchableOpacity style={style.setaDireita}>
+                                <Ionicons name="chevron-forward" size={20} color="#E91E8C" />
+                            </TouchableOpacity>
                         </View>
 
                         <TouchableOpacity style={style.botaoVerMais}>
@@ -91,7 +93,11 @@ export default function PaginaInicio() {
             </ScrollView>
 
             <View style={style.menuInferior}>
-                <TouchableOpacity style={style.menuItem}><Ionicons name="people-outline" size={30} color="#fff" /></TouchableOpacity>
+                <TouchableOpacity
+                    style={style.menuItem}
+                    onPress={() => router.push("/")}>
+                    <Ionicons name="people-outline" size={30} color="#fff" />
+                </TouchableOpacity>
 
                 <View style={style.homeCirculo}>
                     <TouchableOpacity
@@ -102,7 +108,11 @@ export default function PaginaInicio() {
                     </TouchableOpacity>
                 </View>
 
-                <TouchableOpacity style={style.menuItem}><Ionicons name="person-outline" size={30} color="#fff" /></TouchableOpacity>
+                <TouchableOpacity
+                    style={style.menuItem}
+                    onPress={() => router.push("/perfil")}>
+                    <Ionicons name="person-outline" size={30} color="#fff" />
+                </TouchableOpacity>
             </View>
         </View>
     )

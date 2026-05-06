@@ -72,7 +72,7 @@ export default function Index() {
             style={style.botao}
             onPress={() => router.push("/")}
           >
-            <Text style={style.textoBotao}>Entrar</Text>
+            <Link href={"/inicio"}><Text style={style.textoBotao}>Entrar</Text></Link>
           </TouchableOpacity>
 
           <View style={style.loginContainer}>
