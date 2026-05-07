@@ -71,7 +71,7 @@ export default function PerfilPage() {
 
                 <View style={style.card}>
 
-                    <Link href={"/"}
+                    <Link href={"/editarPerfil"}
                         style={style.botao}
                         onPress={() => router.push("/")}
                     >
