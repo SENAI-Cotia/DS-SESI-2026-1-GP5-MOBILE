@@ -31,7 +31,7 @@ export default function editarPerfil() {
             <ScrollView contentContainerStyle={style.scrollContainer} showsVerticalScrollIndicator={false}>
 
                 <View style={style.card}>
-                    <Text>Informações da conta</Text>
+                    <Text style={style.tituloCard}>Informações da conta</Text>
 
                     <View style={style.linhaDupla}>
                         <View style={style.campoMetade}>
@@ -76,38 +76,28 @@ export default function editarPerfil() {
                     </View>
 
                     <View style={style.campoInteiro}>
-            <Text style={style.label}>Gênero</Text>
-            <View style={style.seletorGenero}>
-              <TouchableOpacity 
-                style={[style.opcaoGenero, genero === "Masculino" && style.opcaoAtiva]} 
-                onPress={() => setGenero("Masculino")}
-              >
-                <Text style={[style.textoGenero, genero === "Masculino" && style.textoAtivo]}>Masculino</Text>
-              </TouchableOpacity>
-              
-              <TouchableOpacity 
-                style={[style.opcaoGenero, genero === "Feminino" && style.opcaoAtiva]} 
-                onPress={() => setGenero("Feminino")}
-              >
-                <Text style={[style.textoGenero, genero === "Feminino" && style.textoAtivo]}>Feminino</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+                        <Text style={style.label}>Gênero</Text>
+                        <View style={style.seletorGenero}>
+                            <TouchableOpacity
+                                style={[style.opcaoGenero, genero === "Masculino" && style.opcaoAtiva]}
+                                onPress={() => setGenero("Masculino")}
+                            >
+                                <Text style={[style.textoGenero, genero === "Masculino" && style.textoAtivo]}>Masculino</Text>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                style={[style.opcaoGenero, genero === "Feminino" && style.opcaoAtiva]}
+                                onPress={() => setGenero("Feminino")}
+                            >
+                                <Text style={[style.textoGenero, genero === "Feminino" && style.textoAtivo]}>Feminino</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
 
                 </View>
             </ScrollView>
 
-            <View style={style.menuInferior}>
-                <TouchableOpacity style={style.menuItem}><Ionicons name="people-outline" size={30} color="#fff" /></TouchableOpacity>
-                <View style={style.homeCirculo}>
-                    <TouchableOpacity style={style.homeBotao} onPress={() => router.push("/inicio")}>
-                        <Ionicons name="home" size={32} color="#ffffff" />
-                    </TouchableOpacity>
-                </View>
-                <TouchableOpacity style={style.menuItem} onPress={() => router.push("/perfil")}>
-                    <Ionicons name="person" size={30} color="#fff" />
-                </TouchableOpacity>
-            </View>
+
 
 
 
@@ -214,70 +204,30 @@ const style = StyleSheet.create({
         borderBottomColor: "#000",
         marginTop: 5,
     },
-     seletorGenero: {
-    flexDirection: "row",
-    marginTop: 10,
-    backgroundColor: "#f0f0f0",
-    borderRadius: 15,
-    padding: 5,
-  },
-  opcaoGenero: {
-    flex: 1,
-    paddingVertical: 8,
-    alignItems: "center",
-    borderRadius: 12,
-  },
-  opcaoAtiva: {
-    backgroundColor: "#E91E8C",
-  },
-  textoGenero: {
-    fontSize: 14,
-    color: "#666",
-  },
-  textoAtivo: {
-    color: "#fff",
-    fontWeight: "bold",
-  },
-
-    menuInferior: {
-        position: "absolute",
-        bottom: 0,
-        width: "100%",
-        height: 70,
-        backgroundColor: "#e01a5f",
+    seletorGenero: {
         flexDirection: "row",
-        justifyContent: "space-around",
+        marginTop: 10,
+        backgroundColor: "#f0f0f0",
+        borderRadius: 15,
+        padding: 5,
+    },
+    opcaoGenero: {
+        flex: 1,
+        paddingVertical: 8,
         alignItems: "center",
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
+        borderRadius: 12,
     },
-    menuItem: {
-        padding: 10
-    },
-    iconMenu: {
-        fontSize: 28,
-        color: "#fff"
-    },
-    homeCirculo: {
-        width: 80,
-        height: 80,
-        borderRadius: 40,
+    opcaoAtiva: {
         backgroundColor: "#e01a5f",
-        marginTop: -40,
-        justifyContent: "center",
-        alignItems: "center"
     },
-    homeBotao: {
-        width: 65,
-        height: 65,
-        borderRadius: 32.5,
-        backgroundColor: "#e01a5f",
-        justifyContent: "center",
-        alignItems: "center",
-        elevation: 5
+    textoGenero: {
+        fontSize: 14,
+        color: "#666",
     },
-    iconHome: {
-        fontSize: 32,
+    textoAtivo: {
+        color: "#fff",
+        fontWeight: "bold",
     },
+
 
 })

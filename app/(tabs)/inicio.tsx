@@ -15,6 +15,7 @@ export default function PaginaInicio() {
             curso: "Marketing",
             tempo: "Há 8 horas",
             texto: "Pessoal! Comprei um caderno inteligente no início do ano mas acabei não usando e também não pretendo usar. Interessados, me chamem no chat!",
+            fotoPerfil: "https://images.unsplash.com/photo-1654110455429-cf322b40a906?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Zm90byUyMGRvJTIwcGVyZmlsfGVufDB8fDB8fHww",
             imagem: "https://m.media-amazon.com/images/I/61jxpLGWDHL._AC_SY355_.jpg"
         },
         {
@@ -23,7 +24,8 @@ export default function PaginaInicio() {
             curso: "Nutrição",
             tempo: "Há 2 dias",
             texto: "A sobremesa que você precisa aqui!!! 🤎🤍 Estou vendendo bolos de pote pessoal! São todos bem recheados, uma delícia. Me chamem para mais informações!",
-            imagem: "https://www.receiteria.com.br/wp-content/uploads/bolo-de-pote-de-chocolate-com-morango-fit-1-730x730.jpg"
+            imagem: "https://www.receiteria.com.br/wp-content/uploads/bolo-de-pote-de-chocolate-com-morango-fit-1-730x730.jpg",
+            fotoPerfil: "https://wallpapers.com/images/hd/professional-profile-pictures-4162-x-6243-ds59e3wn0uignqdp.jpg"
         }
 
     ]
@@ -31,16 +33,16 @@ export default function PaginaInicio() {
     return (
 
         <View style={style.fundo}>
-            <View style={style.bolaFundo} />
+            
 
             <ScrollView contentContainerStyle={style.scrollContainer} showsHorizontalScrollIndicator={false}>
 
                 <View style={style.header}>
 
-                    <TouchableOpacity><Ionicons name="add" size={30} color="#ffffff" /></TouchableOpacity>
-                    <Image source={require("../assets/images/logo.png")} style={style.logo}></Image>
+                    <TouchableOpacity><Ionicons name="add" size={30} color="#e01a5f" /></TouchableOpacity>
+                    <Image source={require("../../assets/images/logo.png")} style={style.logo}></Image>
 
-                    <TouchableOpacity><Ionicons name="notifications-outline" size={26} color="#E91E8C" /></TouchableOpacity>
+                    <TouchableOpacity><Ionicons name="notifications-outline" size={26} color="#e01a5f" /></TouchableOpacity>
                 </View>
 
 
@@ -48,21 +50,18 @@ export default function PaginaInicio() {
                     <TextInput
                         style={style.inputBusca}
                         placeholder="calculadora científica..."
-                        placeholderTextColor="#dbcece"
+                        placeholderTextColor="#ffffff9f"
                         value={busca}
                         onChangeText={setBusca}
                     />
                     <Ionicons name="search" size={20} color="#fff" />
                 </View>
 
-
-                <br />
-
                 {posts.map((post) => (
                     <View key={post.id} style={style.card}>
                         <View style={style.perfilContainer}>
                             <Image
-                                source={{ uri: "https://github.com/identicons/jasonlong.png" }}
+                                source={{ uri: post.fotoPerfil }}
                                 style={style.fotoPerfil}
                             />
                             <View style={{ flex: 1, marginLeft: 10 }} >
@@ -81,7 +80,7 @@ export default function PaginaInicio() {
                                 resizeMode="cover"
                             />
                             <TouchableOpacity style={style.setaDireita}>
-                                <Ionicons name="chevron-forward" size={20} color="#E91E8C" />
+                                <Ionicons name="chevron-forward" size={20} color="#e01a5f" />
                             </TouchableOpacity>
                         </View>
 
@@ -91,29 +90,6 @@ export default function PaginaInicio() {
                     </View>
                 ))}
             </ScrollView>
-
-            <View style={style.menuInferior}>
-                <TouchableOpacity
-                    style={style.menuItem}
-                    onPress={() => router.push("/")}>
-                    <Ionicons name="people-outline" size={30} color="#fff" />
-                </TouchableOpacity>
-
-                <View style={style.homeCirculo}>
-                    <TouchableOpacity
-                        style={style.homeBotao}
-                        onPress={() => router.push("/inicio")}
-                    >
-                        <Ionicons name="home" size={32} color="#fff" />
-                    </TouchableOpacity>
-                </View>
-
-                <TouchableOpacity
-                    style={style.menuItem}
-                    onPress={() => router.push("/perfil")}>
-                    <Ionicons name="person-outline" size={30} color="#fff" />
-                </TouchableOpacity>
-            </View>
         </View>
     )
 }
@@ -144,6 +120,7 @@ const style = StyleSheet.create({
         backgroundColor: "#e01a5f",
         marginHorizontal: 20,
         marginTop: 15,
+        marginBottom: 20, // espaço entre a busca e os cards
         borderRadius: 25,
         flexDirection: "row",
         alignItems: "center",
@@ -165,17 +142,7 @@ const style = StyleSheet.create({
         paddingTop: 20,
         paddingBottom: 100
     },
-    bolaFundo: {
-        position: "absolute",
-        top: 30,
-        left: -40,
-        width: 250,
-        height: 180,
-        backgroundColor: "#e01a5f",
-        borderRadius: 60,
-        transform: [{ rotate: "-15deg" }],
-        zIndex: 0
-    },
+    
     card: {
         backgroundColor: "#e6dada",
         borderRadius: 35,
@@ -257,46 +224,6 @@ const style = StyleSheet.create({
         color: "#fff",
         fontSize: 12,
         fontWeight: "bold"
-    },
-    menuInferior: {
-        position: "absolute",
-        bottom: 0,
-        width: "100%",
-        height: 70,
-        backgroundColor: "#e01a5f",
-        flexDirection: "row",
-        justifyContent: "space-around",
-        alignItems: "center",
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-    },
-    menuItem: {
-        padding: 10
-    },
-    iconMenu: {
-        fontSize: 28,
-        color: "#fff"
-    },
-    homeCirculo: {
-        width: 80,
-        height: 80,
-        borderRadius: 40,
-        backgroundColor: "#e01a5f",
-        marginTop: -40,
-        justifyContent: "center",
-        alignItems: "center"
-    },
-    homeBotao: {
-        width: 65,
-        height: 65,
-        borderRadius: 32.5,
-        backgroundColor: "#e01a5f",
-        justifyContent: "center",
-        alignItems: "center",
-        elevation: 5
-    },
-    iconHome: {
-        fontSize: 32,
     },
 
 })
