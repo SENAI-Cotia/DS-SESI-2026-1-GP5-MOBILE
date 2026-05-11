@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Dimensions, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 
 const { width } = Dimensions.get('window');
+// Pegar
 
 export default function Index() {
   const [cpf, setCpf] = useState("")

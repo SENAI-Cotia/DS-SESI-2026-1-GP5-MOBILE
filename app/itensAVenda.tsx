@@ -55,7 +55,7 @@ export default function itensaVenda() {
                                 style={style.iconeEditar}
                                 onPress={() => console.log("Editar item", itenAVenda.id)}
                             >
-                                <Link href={"/"}>
+                                <Link href={"/editarVenda"}>
                                     <MaterialCommunityIcons
                                         name="pencil"
                                         size={20}
@@ -135,7 +135,7 @@ export default function itensaVenda() {
 
                 <TouchableOpacity style={style.menuItem}><Ionicons name="person-outline" size={30} color="#fff" /></TouchableOpacity>
             </View>
-            
+
         </SafeAreaView >
 
     )
