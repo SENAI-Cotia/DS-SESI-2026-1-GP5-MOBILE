@@ -70,16 +70,15 @@ export default function Index() {
 
           <TouchableOpacity
             style={style.botao}
-            onPress={() => router.push("/")}
+            onPress={() => router.push("/(tabs)/inicio")}
           >
-            <Link href={"/inicio"}><Text style={style.textoBotao}>Entrar</Text></Link>
+           <Text style={style.textoBotao}>Entrar</Text>
           </TouchableOpacity>
 
           <View style={style.loginContainer}>
             <Text>Não possui cadastro?</Text>
 
             <Link href={"/cadastro"}><Text style={style.textoCadastro}>Me Cadastrar</Text></Link>
-            <Link href={"/perfil"}><Text style={style.textoCadastro}>Perfil</Text></Link>
 
           </View>
 
@@ -199,11 +198,12 @@ const style = StyleSheet.create({
   },
 
   loginContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginTop: 15,
-    gap: 4,
-  },
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center",
+  marginTop: 15,
+  gap: 4,
+},
 
   textoCadastro: {
     color: "#e01a5f",

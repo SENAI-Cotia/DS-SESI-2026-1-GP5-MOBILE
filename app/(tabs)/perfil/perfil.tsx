@@ -1,4 +1,4 @@
-import { Ionicons , MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { Link, useRouter } from 'expo-router';
 import React, { useState } from 'react';
@@ -57,7 +57,7 @@ export default function PerfilPage() {
                             source={
                                 foto
                                     ? { uri: foto }
-                                    : require("../assets/images/logo.png")
+                                    : require("../../../assets/images/logo.png")
                             }
                             style={style.fotoPerfil}
                         />
@@ -71,7 +71,7 @@ export default function PerfilPage() {
 
                 <View style={style.card}>
 
-                    <Link href={"/editarPerfil"}
+                    <Link href={"/(tabs)/perfil/editarPerfil"}
                         style={style.botao}
                         onPress={() => router.push("/")}
                     >
@@ -103,7 +103,7 @@ export default function PerfilPage() {
                         <Text style={style.textoBotao}>Acessibilidade</Text>
                     </Link>
 
-                    <Link href={"/ultimasCompras"}
+                    <Link href={"/(tabs)/perfil/ultimasCompras"}
                             style={style.botao}
                             onPress={() => router.push("/")}>
 
@@ -117,7 +117,7 @@ export default function PerfilPage() {
                             <Text style={style.textoBotao}>Últimas Compras</Text>
                     </Link>
 
-                    <Link href={"/itensAVenda"}
+                    <Link href={"/(tabs)/perfil/itensAVenda"}
                         style={style.botao}
                         onPress={() => router.push("/")}
                     >
