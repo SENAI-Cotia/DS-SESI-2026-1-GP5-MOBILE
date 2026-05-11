@@ -1,6 +1,6 @@
 import { Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+    
 const ultimasCompras = [
     {
         id: 1,
