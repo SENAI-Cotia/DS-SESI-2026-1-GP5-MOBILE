@@ -69,7 +69,7 @@ export default function PerfilPage() {
 
                 </View>
 
-                <View style={style.card}>
+                <View style={style.container}>
 
                     <Link href={"/(tabs)/perfil/editarPerfil"}
                         style={style.botao}
@@ -105,17 +105,57 @@ export default function PerfilPage() {
 
                     <Link href={"/(tabs)/perfil/ultimasCompras"}
                             style={style.botao}
-                            onPress={() => router.push("/")}>
+                            
+                           
+                        >
+
+                            <MaterialCommunityIcons
+                                name="cog"
+                                size={20}
+                                color="#000000"
+                                style={{ marginLeft: 20 }}
+                            />
+
+                            <Text style={style.textoBotao}>
+                                Configurações da minha conta
+                            </Text>
+
+                        </Link>
+
+                        <View style={style.linha}></View>
+
+                        <TouchableOpacity
+                            style={style.botao}
+                            activeOpacity={0.7}
+                            onPress={() => router.push("/")}
+                        >
+                            <MaterialCommunityIcons
+                                name="puzzle"
+                                size={20}
+                                color="#000000"
+                                style={{ marginLeft: 20 }}
+                            />
+
+                            <Text style={style.textoBotao}>Acessibilidade</Text>
+                        </TouchableOpacity>
+
+                        <View style={style.linha}></View>
+
+                        <TouchableOpacity
+                            style={style.botao}
+                            activeOpacity={0.7}
+                            onPress={() => router.push("/(tabs)/perfil/ultimasCompras")}
+                        >
 
                             <MaterialCommunityIcons
                                 name="restart"
                                 size={20}
-                                color="#ffffff"
+                                color="#000000"
                                 style={{ marginLeft: 20 }}
                             />
 
                             <Text style={style.textoBotao}>Últimas Compras</Text>
-                    </Link>
+                        </TouchableOpacity>
 
                     <Link href={"/(tabs)/perfil/itensAVenda"}
                         style={style.botao}
@@ -130,18 +170,37 @@ export default function PerfilPage() {
                         <Text style={style.textoBotao}>Itens à venda</Text>
                     </Link>
 
-                    <Link href={"/"}
-                        style={style.botao}
-                        onPress={() => router.push("/")}
-                    >
-                        <MaterialCommunityIcons
-                            name="help"
-                            size={20}
-                            color="#ffffff"
-                            style={{ marginLeft: 20 }}
-                        />
-                        <Text style={style.textoBotao}>Central de ajuda</Text>
-                    </Link>
+                        <TouchableOpacity
+                            style={style.botao}
+                            activeOpacity={0.7}
+                            onPress={() => router.push("/(tabs)/perfil/itensAVenda")}
+                        >
+                            <MaterialCommunityIcons
+                                name="shopping"
+                                size={20}
+                                color="#000000"
+                                style={{ marginLeft: 20 }}
+                            />
+                            <Text style={style.textoBotao}>Itens à venda</Text>
+                        </TouchableOpacity>
+
+                        <View style={style.linha}></View>
+
+                        <TouchableOpacity
+                            style={style.botao}
+                            activeOpacity={0.7}
+                            onPress={() => router.push("/novoProduto")}
+                        >
+                            <MaterialCommunityIcons
+                                name="help"
+                                size={20}
+                                color="#000000"
+                                style={{ marginLeft: 20 }}
+                            />
+                            <Text style={style.textoBotao}>Central de ajuda</Text>
+                        </TouchableOpacity>
+
+                   
 
                 </View>
 
@@ -155,7 +214,7 @@ export default function PerfilPage() {
 const style = StyleSheet.create({
     fundo: {
         flex: 1,
-        backgroundColor: "#fff",
+        backgroundColor: "#F6ECF0",
     },
     bolaTopo: {
         position: "absolute",
@@ -183,14 +242,27 @@ const style = StyleSheet.create({
   },
     scrollContainer: {
         flexGrow: 1,
+        alignItems: "center",
+        paddingTop: 240,
+    },
+
+    container: {
+        width: "100%",
+        flex: 1,
         justifyContent: "center",
         alignItems: "center",
     },
+
+    linha: {
+        height: 1,
+        backgroundColor: "#E5E5E5",
+        width: "100%",
+    },
+
     card: {
         backgroundColor: "#fff",
         width: "85%",
         borderRadius: 30,
-        padding: 25,
         shadowColor: "#000",
         shadowOpacity: 0.2,
         shadowRadius: 10,
@@ -233,15 +305,18 @@ const style = StyleSheet.create({
     },
 
     botao: {
-        backgroundColor: "#e01a5f",
+        backgroundColor: "#ffffff",
         paddingVertical: 12,
         borderRadius: 25,
         alignItems: "flex-start",
         marginTop: 10,
         flexDirection: "row",
+
+        width: "100%",
     },
+
     textoBotao: {
-        color: "#fff",
+        color: "#000000",
         fontSize: 16,
         fontWeight: "bold",
         marginLeft: 10,
@@ -265,9 +340,10 @@ const style = StyleSheet.create({
     headerPerfil: {
         width: "85%",
         flexDirection: "row",
-        justifyContent: "space-between", // texto esquerda, foto direita
+        justifyContent: "space-between",
         alignItems: "center",
-        marginBottom: 30,
+
+        marginBottom: -240,
     },
 
     fotoContainer: {

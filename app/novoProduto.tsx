@@ -1,8 +1,8 @@
 import { Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
+import * as ImagePicker from 'expo-image-picker';
 import { SafeAreaView } from "react-native-safe-area-context"
 import { router } from "expo-router";
-import * as ImagePicker from 'expo-image-picker';
 import { useState } from "react";
 
 const { width } = Dimensions.get("window")
@@ -10,6 +10,20 @@ const { width } = Dimensions.get("window")
 export default function ultimascompras() {
 
     const [marcado, setMarcado] = useState(false)
+    const [imagem, setImagem] = useState(null)
+
+    const escolherImagem = async () => {
+        const resultado = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+            aspect: [4, 5],
+            quality: 1,
+        });
+
+        if (!resultado.canceled) {
+            setImagem(resultado.assets[0].uri)
+        }
+    }
 
     return (
 
@@ -41,13 +55,41 @@ export default function ultimascompras() {
 
                     </View>
 
-                    <Image
-                        style={style.fotoProduto}
-                        source={{ uri: "https://i.pravatar.cc/159" }}>
-                    </Image>
+                    <View style={style.descricao}>
+                        <Text style={style.descricaoTexto}>
+                            Descrição do produto...
+                        </Text>
+                    </View>
 
-                    <Text style={style.nomeProduto}>Livro Conexões com a Matemática - Vereda Digital </Text>
-                    <Text style={style.preco}>R$ 25,00</Text>
+                    <TouchableOpacity
+                        style={style.fotoProduto}
+                        onPress={escolherImagem}
+                        activeOpacity={0.8}
+                    >
+
+                        {imagem ? (
+                            <Image
+                                source={{ uri: imagem }}
+                                style={style.imagemSelecionada}
+                            />
+                        ) : (
+                            <>
+                                <Ionicons
+                                    name="cloud-upload-outline"
+                                    size={60}
+                                    color="#000"
+                                />
+
+                                <Text style={style.addImg}>
+                                    ADICIONAR IMAGEM
+                                </Text>
+                            </>
+                        )}
+
+                    </TouchableOpacity>
+
+                    <Text style={style.nomeProduto}>NOME</Text>
+                    <Text style={style.preco}>PREÇO (R$)</Text>
 
                     <View style={style.container2}>
 
@@ -111,6 +153,7 @@ export default function ultimascompras() {
                                 </View>
 
                             </View>
+
                         </View>
 
                         <View>
@@ -172,7 +215,6 @@ export default function ultimascompras() {
                                 </View>
                             </View>
                         </View>
-
                     </View>
 
                     <View
@@ -219,7 +261,7 @@ export default function ultimascompras() {
             </View>
 
 
-        </SafeAreaView>
+        </SafeAreaView >
 
     )
 }
@@ -231,11 +273,35 @@ const style = StyleSheet.create({
         alignItems: "center",
         flexDirection: "row",
         gap: 15,
-        marginTop: 10,
+        marginTop: 20,
+    },
+
+    descricaoTexto: {
+        fontSize: 10,
+        color: "#3f3f3f",
+        textAlign: "center",
+    },
+
+    descricao: {
+        marginTop: 5,
+        marginBottom: 15,
+        width: "80%",
+        height: 50,
+        backgroundColor: "#e0e0e0",
+        borderRadius: 20,
+        padding: 5,
+        justifyContent: "center",
     },
 
     card3Texto: {
         fontSize: 10,
+    },
+
+    tituloSecao: {
+        fontSize: 12,
+        fontWeight: "bold",
+        marginBottom: 5,
+        textAlign: "center",
     },
 
     card3a: {
@@ -278,7 +344,7 @@ const style = StyleSheet.create({
         justifyContent: "space-between", // separa esquerda/direita
         paddingHorizontal: 15,     // dá espaço interno
 
-        marginTop: 20,
+        marginTop: 30,
     },
 
     check: {
@@ -298,16 +364,33 @@ const style = StyleSheet.create({
         fontWeight: "bold",
     },
 
+    imagemSelecionada: {
+        width: "100%",
+        height: "100%",
+        borderRadius: 20,
+    },
+
     preco: {
         color: "#e01a5f",
         fontWeight: "bold",
         marginTop: 5,
+        opacity: 0.7,
+        backgroundColor: "#dddddd", // fundo pra não ficar transparente
+        paddingHorizontal: 5, // espaço interno horizontal
+        borderRadius: 10,
+        width: "35%",
+        textAlign: "center",
     },
 
     nomeProduto: {
         marginTop: 10,
         fontWeight: "bold",
         textAlign: "center",
+        opacity: 0.7,
+        backgroundColor: "#e01a5f", // fundo pra não ficar transparente
+        paddingHorizontal: 5, // espaço interno horizontal
+        borderRadius: 10,
+        width: "35%",
     },
 
     card2: {
@@ -349,13 +432,6 @@ const style = StyleSheet.create({
         backgroundColor: "#e01a5f",
     },
 
-    tituloSecao: {
-        fontSize: 12,
-        fontWeight: "bold",
-        marginBottom: 5,
-        textAlign: "center",
-    },
-
     menuInferior: {
         position: "absolute",
         bottom: 0,
@@ -367,6 +443,12 @@ const style = StyleSheet.create({
         alignItems: "center",
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
+    },
+
+    addImg: {
+        color: "#e01a5f",
+        fontWeight: "bold",
+        marginTop: 10,
     },
 
     menuItem: {
@@ -396,7 +478,7 @@ const style = StyleSheet.create({
     card: {
         backgroundColor: "#F5F5F5",
         width: 280,
-        height: 630,
+        height: 710,
         borderRadius: 40,
         shadowColor: "#000",
         shadowOpacity: 0.2,
@@ -432,11 +514,12 @@ const style = StyleSheet.create({
     nomePerfil: {
         fontSize: 14,
         fontWeight: "bold",
+        color: "#e01a5f",
     },
 
     cursoPerfil: {
         fontSize: 12,
-        color: "#666",
+        color: "#e01a5f",
     },
 
     linhaNome: {
@@ -452,8 +535,13 @@ const style = StyleSheet.create({
     },
 
     fotoProduto: {
-        width: 167,
+        width: "80%",
         height: 221,
+        backgroundColor: "#e0e0e0",
+        borderRadius: 20,
+        justifyContent: "center",
+        alignItems: "center",
+        marginBottom: 5,
     },
 
 
