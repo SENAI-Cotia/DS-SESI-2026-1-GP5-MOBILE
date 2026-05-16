@@ -1,7 +1,8 @@
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { Link, useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
     Dimensions,
     Image,
@@ -17,15 +18,30 @@ const { width } = Dimensions.get('window');
 export default function PerfilPage() {
 
     const escolherFoto = async () => {
+
+        // pede permissão
+        const permissao = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+        if (!permissao.granted) {
+            alert("Precisamos da permissão da galeria!");
+            return;
+        }
+
+        // abre galeria
         const resultado = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            mediaTypes: ['images'],
             allowsEditing: true,
             aspect: [1, 1],
             quality: 1,
         });
 
+        // salva foto
         if (!resultado.canceled) {
-            setFoto(resultado.assets[0].uri);
+            const uri = resultado.assets[0].uri;
+
+            setFoto(uri);
+
+            await AsyncStorage.setItem("fotoPerfil", uri);
         }
     };
 
@@ -33,24 +49,33 @@ export default function PerfilPage() {
 
     const router = useRouter()
 
+    useEffect(() => {
+        carregarFoto();
+    }, []);
+
+    const carregarFoto = async () => {
+        const fotoSalva = await AsyncStorage.getItem("fotoPerfil");
+
+        if (fotoSalva) {
+            setFoto(fotoSalva);
+        }
+    };
+
     return (
         <View style={style.fundo}>
             <View style={style.bolaTopo} />
             <View style={style.bolaBaixo} />
 
-            <TouchableOpacity 
-        style={style.botaoVoltar} 
-        onPress={() => router.back()}
-      >
-        <Ionicons name="chevron-back" size={30} color="#fff" />
-      </TouchableOpacity>
+            
 
 
             <ScrollView contentContainerStyle={style.scrollContainer}>
 
                 <View style={style.headerPerfil}>
 
-                    <Text style={style.titulo}>      Olá [nome]</Text>
+                    <View style={{ flex: 1 }}>
+                        <Text style={style.titulo}>Olá [nome]</Text>
+                    </View>
 
                     <View style={style.fotoContainer}>
                         <Image
@@ -71,136 +96,88 @@ export default function PerfilPage() {
 
                 <View style={style.container}>
 
-                    <Link href={"/(tabs)/perfil/editarPerfil"}
+                    <TouchableOpacity
                         style={style.botao}
-                        onPress={() => router.push("/")}
+                        activeOpacity={0.7}
+                        onPress={() => router.push("/(tabs)/perfil/editarPerfil")}
                     >
-
                         <MaterialCommunityIcons
                             name="cog"
                             size={20}
-                            color="#ffffff"
+                            color="#000000"
                             style={{ marginLeft: 20 }}
                         />
 
-                        <Text style={style.textoBotao}>
-                            Configurações da minha conta
-                        </Text>
+                        <Text style={style.textoBotao}>Configurações da minha conta</Text>
+                    </TouchableOpacity>
 
-                    </Link>
+                    <View style={style.linha}></View>
 
-                    <Link href={"/"}
+                    <TouchableOpacity
                         style={style.botao}
+                        activeOpacity={0.7}
                         onPress={() => router.push("/")}
                     >
                         <MaterialCommunityIcons
                             name="puzzle"
                             size={20}
-                            color="#ffffff"
+                            color="#000000"
                             style={{ marginLeft: 20 }}
                         />
 
                         <Text style={style.textoBotao}>Acessibilidade</Text>
-                    </Link>
+                    </TouchableOpacity>
 
-                    <Link href={"/(tabs)/perfil/ultimasCompras"}
-                            style={style.botao}
-                            
-                           
-                        >
+                    <View style={style.linha}></View>
 
-                            <MaterialCommunityIcons
-                                name="cog"
-                                size={20}
-                                color="#000000"
-                                style={{ marginLeft: 20 }}
-                            />
-
-                            <Text style={style.textoBotao}>
-                                Configurações da minha conta
-                            </Text>
-
-                        </Link>
-
-                        <View style={style.linha}></View>
-
-                        <TouchableOpacity
-                            style={style.botao}
-                            activeOpacity={0.7}
-                            onPress={() => router.push("/")}
-                        >
-                            <MaterialCommunityIcons
-                                name="puzzle"
-                                size={20}
-                                color="#000000"
-                                style={{ marginLeft: 20 }}
-                            />
-
-                            <Text style={style.textoBotao}>Acessibilidade</Text>
-                        </TouchableOpacity>
-
-                        <View style={style.linha}></View>
-
-                        <TouchableOpacity
-                            style={style.botao}
-                            activeOpacity={0.7}
-                            onPress={() => router.push("/(tabs)/perfil/ultimasCompras")}
-                        >
-
-                            <MaterialCommunityIcons
-                                name="restart"
-                                size={20}
-                                color="#000000"
-                                style={{ marginLeft: 20 }}
-                            />
-
-                            <Text style={style.textoBotao}>Últimas Compras</Text>
-                        </TouchableOpacity>
-
-                    <Link href={"/(tabs)/perfil/itensAVenda"}
+                    <TouchableOpacity
                         style={style.botao}
-                        onPress={() => router.push("/")}
+                        activeOpacity={0.7}
+                        onPress={() => router.push("/(tabs)/perfil/ultimasCompras")}
+                    >
+
+                        <MaterialCommunityIcons
+                            name="restart"
+                            size={20}
+                            color="#000000"
+                            style={{ marginLeft: 20 }}
+                        />
+
+                        <Text style={style.textoBotao}>Últimas Compras</Text>
+                    </TouchableOpacity>
+
+
+                    <TouchableOpacity
+                        style={style.botao}
+                        activeOpacity={0.7}
+                        onPress={() => router.push("/(tabs)/perfil/itensAVenda")}
                     >
                         <MaterialCommunityIcons
                             name="shopping"
                             size={20}
-                            color="#ffffff"
+                            color="#000000"
                             style={{ marginLeft: 20 }}
                         />
                         <Text style={style.textoBotao}>Itens à venda</Text>
-                    </Link>
+                    </TouchableOpacity>
 
-                        <TouchableOpacity
-                            style={style.botao}
-                            activeOpacity={0.7}
-                            onPress={() => router.push("/(tabs)/perfil/itensAVenda")}
-                        >
-                            <MaterialCommunityIcons
-                                name="shopping"
-                                size={20}
-                                color="#000000"
-                                style={{ marginLeft: 20 }}
-                            />
-                            <Text style={style.textoBotao}>Itens à venda</Text>
-                        </TouchableOpacity>
+                    <View style={style.linha}></View>
 
-                        <View style={style.linha}></View>
+                    <TouchableOpacity
+                        style={style.botao}
+                        activeOpacity={0.7}
+                        onPress={() => router.push("/")}
+                    >
+                        <MaterialCommunityIcons
+                            name="help"
+                            size={20}
+                            color="#000000"
+                            style={{ marginLeft: 20 }}
+                        />
+                        <Text style={style.textoBotao}>Central de ajuda</Text>
+                    </TouchableOpacity>
 
-                        <TouchableOpacity
-                            style={style.botao}
-                            activeOpacity={0.7}
-                            onPress={() => router.push("/novoProduto")}
-                        >
-                            <MaterialCommunityIcons
-                                name="help"
-                                size={20}
-                                color="#000000"
-                                style={{ marginLeft: 20 }}
-                            />
-                            <Text style={style.textoBotao}>Central de ajuda</Text>
-                        </TouchableOpacity>
 
-                   
 
                 </View>
 
@@ -234,12 +211,6 @@ const style = StyleSheet.create({
         borderRadius: 125,
         backgroundColor: "#e01a5f",
     },
-    botaoVoltar: {
-    position: "absolute",
-    top: 50,
-    left: 20,
-    zIndex: 20,
-  },
     scrollContainer: {
         flexGrow: 1,
         alignItems: "center",
@@ -271,9 +242,9 @@ const style = StyleSheet.create({
     titulo: {
         fontSize: 22,
         fontWeight: "bold",
-        textAlign: "center",
-
+        textAlign: "left",
     },
+
     subtitulo: {
         fontSize: 13,
         color: "#666",
@@ -311,8 +282,8 @@ const style = StyleSheet.create({
         alignItems: "flex-start",
         marginTop: 10,
         flexDirection: "row",
-
-        width: "100%",
+        
+        width: "90%",
     },
 
     textoBotao: {
@@ -340,14 +311,14 @@ const style = StyleSheet.create({
     headerPerfil: {
         width: "85%",
         flexDirection: "row",
-        justifyContent: "space-between",
         alignItems: "center",
-
+        justifyContent: "space-between",
         marginBottom: -240,
     },
 
     fotoContainer: {
         position: "relative",
+        overflow: "visible",
     },
 
     fotoPerfil: {
@@ -361,8 +332,13 @@ const style = StyleSheet.create({
         top: -5,
         right: -5,
         backgroundColor: "#e01a5f",
-        borderRadius: 10,
-        padding: 4,
+        borderRadius: 20,
+        padding: 6,
+        zIndex: 10,
+        elevation: 10,
     },
+    cog: {
+        marginLeft: 100
+    }
 
 });

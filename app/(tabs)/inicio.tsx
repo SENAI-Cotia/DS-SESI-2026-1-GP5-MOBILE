@@ -39,7 +39,10 @@ export default function PaginaInicio() {
 
                 <View style={style.header}>
 
-                    <TouchableOpacity><Ionicons name="add" size={30} color="#e01a5f" /></TouchableOpacity>
+                    <TouchableOpacity
+                    onPress={() => router.push("/novoProduto")}
+                    
+                    ><Ionicons name="add" size={30} color="#e01a5f" /></TouchableOpacity>
                     <Image source={require("../../assets/images/logo.png")} style={style.logo}></Image>
 
                     <TouchableOpacity><Ionicons name="notifications-outline" size={26} color="#e01a5f" /></TouchableOpacity>
@@ -140,7 +143,8 @@ const style = StyleSheet.create({
     scrollContainer: {
         paddingHorizontal: 20,
         paddingTop: 20,
-        paddingBottom: 100
+        paddingBottom: 100,
+        marginTop: 25,
     },
     
     card: {

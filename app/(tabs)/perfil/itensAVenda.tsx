@@ -32,8 +32,14 @@ const { width } = Dimensions.get("window")
 export default function itensaVenda() {
     return (
         <SafeAreaView style={style.fundo}>
-            
-            
+
+            <TouchableOpacity
+                style={style.botaoVoltar}
+                onPress={() => router.back()}
+            >
+                <Ionicons name="chevron-back" size={30} color="#e01a5f" />
+            </TouchableOpacity>
+
 
             <ScrollView showsHorizontalScrollIndicator={false}>
 
@@ -86,7 +92,7 @@ export default function itensaVenda() {
                                         >
                                             {itenAVenda.title}
                                         </Text>
-                                      
+
 
                                         <View style={style.infos}>
                                             <Text
@@ -120,8 +126,8 @@ export default function itensaVenda() {
 
             </ScrollView>
 
-            
-            
+
+
         </SafeAreaView >
 
     )
@@ -267,8 +273,14 @@ const style = StyleSheet.create({
 
     iconeEditar: {
         position: "absolute",
-        top: 25,
-        right: 25,
+        top: 15,
+        right: 15,
         zIndex: 1,
+    },
+    botaoVoltar: {
+        position: "absolute",
+        top: 60,
+        left: 20,
+        zIndex: 20,
     },
 });

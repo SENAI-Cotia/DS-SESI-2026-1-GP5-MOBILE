@@ -1,3 +1,5 @@
+import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 import { Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
     
@@ -14,7 +16,7 @@ const ultimasCompras = [
         title: "Cálculo Numérico - Aprendizagem Com Apoio De Software",
         preco: 30,
         image: "https://m.media-amazon.com/images/I/91u8wQS2G6L._SY342_.jpg",
-        situacao: "À Venda"
+        situacao: "Em Andamento"
     },
     {
         id: 3,
@@ -45,6 +47,13 @@ export default function ultimascompras() {
     return (
         <SafeAreaView style={style.fundo}>
 
+            <TouchableOpacity
+                            style={style.botaoVoltar}
+                            onPress={() => router.back()}
+                        >
+                            <Ionicons name="chevron-back" size={30} color="#e01a5f" />
+                        </TouchableOpacity>
+
 
             <ScrollView
                 showsHorizontalScrollIndicator={false}
@@ -62,7 +71,7 @@ export default function ultimascompras() {
                             key={ultimaCompra.id}
                             style={[
                                 style.card,
-                                ultimaCompra.situacao.toLowerCase().includes("venda") && style.cardAndamento
+                                ultimaCompra.situacao.toLowerCase().includes("andamento") && style.cardAndamento
                             ]}
                         >
 
@@ -79,7 +88,7 @@ export default function ultimascompras() {
                                         <Text
                                             style={[
                                                 style.title,
-                                                ultimaCompra.situacao.toLowerCase().includes("venda") && style.titleVenda
+                                                ultimaCompra.situacao.toLowerCase().includes("andamento") && style.titleVenda
                                             ]}
                                         >
                                             {ultimaCompra.title}
@@ -90,7 +99,7 @@ export default function ultimascompras() {
                                             <Text
                                                 style={[
                                                     style.preco,
-                                                    ultimaCompra.situacao.toLowerCase().includes("venda") && style.infoVenda
+                                                    ultimaCompra.situacao.toLowerCase().includes("andamento") && style.infoVenda
                                                 ]}
                                             >
                                                 R$
@@ -100,7 +109,7 @@ export default function ultimascompras() {
                                             <Text
                                                 style={[
                                                     style.situacao,
-                                                    ultimaCompra.situacao.toLowerCase().includes("venda") && style.infoVenda
+                                                    ultimaCompra.situacao.toLowerCase().includes("andamento") && style.infoVenda
                                                 ]}
                                             >
                                                 {ultimaCompra.situacao}
@@ -206,6 +215,12 @@ const style = StyleSheet.create({
 
     infoVenda: {
         color: "#6d505a",
+    },
+    botaoVoltar: {
+        position: "absolute",
+        top: 60,
+        left: 20,
+        zIndex: 20,
     },
 
 });

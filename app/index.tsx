@@ -95,6 +95,7 @@ const style = StyleSheet.create({
   fundo: {
     flex: 1,
     backgroundColor: "#fff"
+    
   },
 
   bolaTopo: {
@@ -121,6 +122,7 @@ const style = StyleSheet.create({
     flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
+    
   },
 
   card: {
@@ -160,7 +162,7 @@ const style = StyleSheet.create({
     width: 160,
     height: 50,
     alignSelf: "center",
-    marginTop: 30,
+    marginTop: 60,
   },
 
   logoInline: {
