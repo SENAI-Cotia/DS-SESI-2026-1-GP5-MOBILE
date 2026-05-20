@@ -69,5 +69,6 @@ const styles = StyleSheet.create({
     width: 80,
     borderRadius: 100,
     marginTop: -30, // melhor que translateY
+  
   },
 });

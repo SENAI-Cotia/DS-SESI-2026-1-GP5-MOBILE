@@ -279,7 +279,7 @@ const style = StyleSheet.create({
     },
     botaoVoltar: {
         position: "absolute",
-        top: 60,
+        top: 16,
         left: 20,
         zIndex: 20,
     },
