@@ -61,16 +61,70 @@ export default function PaginaInicio() {
                 (post) => post.user.curso === cursoSelecionado
             )
 
-    return (
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
+} from "react-native"
 
-        <View style={style.fundo}>
+import {
+  Ionicons,
+  MaterialCommunityIcons
+} from "@expo/vector-icons"
+
+export default function Comunidade() {
+
+  const router = useRouter()
+
+  const [busca, setBusca] = useState("")
+  const [mostrarFiltro, setMostrarFiltro] = useState(false)
+  const [cursoSelecionado, setCursoSelecionado] = useState("")
+
+  const cursos = [
+    "Todos",
+    "Desenvolvimento de Sistemas",
+    "Administração",
+    "RH",
+    "Marketing",
+    "Nutrição",
+  ]
+
+  const posts = [
+    {
+      id: 1,
+      nome: "Leide Vikram",
+      curso: "Desenvolvimento de Sistemas",
+      tempo: "Há 16 horas",
+      texto: "Galera! Eu comprei um teclado personalizado, mas no fim eu não gostei muito kk. Interessados?",
+      fotoPerfil: "https://scontent.fcgh39-1.fna.fbcdn.net/v/t39.30808-6/344848253_603660541486991_3243920538383365764_n.jpg?stp=dst-jpg_p526x296_tt6&_nc_cat=101&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=X2nGH_0yMT4Q7kNvwH0f6eo&_nc_oc=Adqd28ADhp67iEsAe1lbBr9DbsXdx9d4m9muZNp7CFTEghJv4wVHpT2Tp05uoTyKQPk&_nc_zt=23&_nc_ht=scontent.fcgh39-1.fna&_nc_gid=M24zkBaBSl4N9rn-1xecjg&_nc_ss=7a289&oh=00_Af7gMxmXhG0aJXColowiajkKHF37b5NhFsj84itgs9c6Rw&oe=6A0A651A",
+      imagem: "https://m.media-amazon.com/images/I/71jAUlz7KPL.jpg"
+    },
+
+    {
+      id: 2,
+      nome: "Victor Alexandre",
+      curso: "Desenvolvimento de Sistemas",
+      tempo: "Há 2 semanas",
+      texto: "Gente! Comprei um curso online de Design Gráfico, já utilizei e tenho o login liberado, alguém quer?",
+      imagem: "https://www.edunecursos.com.br/storage/images/2022/02/design-grafico1645132668.png",
+      fotoPerfil: "https://scontent.fcgh15-1.fna.fbcdn.net/v/t39.30808-6/679881179_27412836014984980_3928926536147438789_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=20G9IkgqNzUQ7kNvwGs8tpE&_nc_oc=AdphC2QDaoIWv9vnSAIK45PvkcpEVf1FyRczSxPwKLDID_s-q9F_5uiflpKnOTnBMi4&_nc_zt=23&_nc_ht=scontent.fcgh15-1.fna&_nc_gid=Y9T6Bv12-ogtE84r32T4yQ&_nc_ss=7b289&oh=00_Af4RzQ6ewfqsR2gDXyew_v_0unaJc5wbpbOsYWfGAkl6SQ&oe=6A0A55B0"
+    },
 
             <ScrollView
                 contentContainerStyle={style.scrollContainer}
                 showsVerticalScrollIndicator={false}
             >
 
-                <View style={style.header}>
+  const postsFiltrados =
+    cursoSelecionado === "" || cursoSelecionado === "Todos"
+      ? posts
+      : posts.filter(
+          (post) => post.curso === cursoSelecionado
+        )
 
                     <TouchableOpacity>
                         <Ionicons name="add" size={30} color="#e01a5f" />
@@ -90,7 +144,11 @@ export default function PaginaInicio() {
 
                 </View>
 
-                <View style={style.linhaPesquisa}>
+            <TextInput
+              style={style.inputBusca}
+              value={busca}
+              onChangeText={setBusca}
+            />
 
                     <View style={style.buscaContainer}>
 
@@ -125,17 +183,36 @@ export default function PaginaInicio() {
 
                     </TouchableOpacity>
 
-                </View>
+            <Ionicons
+              name="filter-sharp"
+              size={20}
+              color="#e01a5f"
+            />
 
-                {mostrarFiltro && (
+          </TouchableOpacity>
 
-                    <View style={style.cardFiltro}>
+        </View>
 
-                        <Text style={style.tituloFiltro}>
-                            Busque pela sua comunidade
-                        </Text>
+        {mostrarFiltro && (
+          <View style={style.cardFiltro}>
 
-                        {cursos.map((curso, index) => (
+            <Text style={style.tituloFiltro}>
+              Busque pela sua comunidade
+            </Text>
+
+            {cursos.map((curso, index) => (
+              <TouchableOpacity
+                key={index}
+                style={[
+                  style.itemFiltro,
+                  cursoSelecionado === curso &&
+                    style.itemSelecionado
+                ]}
+                onPress={() => {
+                  setCursoSelecionado(curso)
+                  setMostrarFiltro(false)
+                }}
+              >
 
                             <TouchableOpacity
                                 key={index}
@@ -152,23 +229,30 @@ export default function PaginaInicio() {
                                 }}
                             >
 
-                                <Text style={style.textoFiltro}>
-                                    {curso}
-                                </Text>
+                <Ionicons
+                  name="chevron-forward"
+                  size={16}
+                  color="#e01a5f"
+                />
 
-                                <Ionicons
-                                    name="chevron-forward"
-                                    size={16}
-                                    color="#e01a5f"
-                                />
+              </TouchableOpacity>
+            ))}
 
-                            </TouchableOpacity>
+          </View>
+        )}
 
-                        ))}
+        {postsFiltrados.map((post) => (
+          <View
+            key={post.id}
+            style={style.card}
+          >
 
-                    </View>
+            <View style={style.perfilContainer}>
 
-                )}
+              <Image
+                source={{ uri: post.fotoPerfil }}
+                style={style.fotoPerfil}
+              />
 
                 {postsFiltrados.map((post) => (
 
@@ -284,11 +368,7 @@ const style = StyleSheet.create({
         width: "50%",
     },
 
-    inputBusca: {
-        flex: 1,
-        color: "#fff",
-        fontSize: 14,
-    },
+            <TouchableOpacity style={style.botaoVerMais}>
 
     scrollContainer: {
         paddingHorizontal: 20,
@@ -438,9 +518,6 @@ const style = StyleSheet.create({
         backgroundColor: "#FFC0D6",
     },
 
-    textoFiltro: {
-        fontSize: 12,
-        fontWeight: "600",
-    },
+const style = StyleSheet.create({
 
 })
