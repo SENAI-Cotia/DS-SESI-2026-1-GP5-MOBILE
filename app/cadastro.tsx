@@ -2,14 +2,9 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Link, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-    View,
-    Text,
+    Alert, Dimensions, Image, ScrollView, StyleSheet, Text,
     TextInput,
-    TouchableOpacity,
-    StyleSheet,
-    Dimensions,
-    ScrollView,
-    Image
+    TouchableOpacity, View
 } from 'react-native';
 
 const { width } = Dimensions.get('window');
@@ -25,6 +20,27 @@ export default function CadastroPage() {
     const [confirmarSenha, setConfirmarSenha] = useState("")
 
     const router = useRouter()
+
+    const handleRegister = async () => {
+        if (!email || !senha || !nome || !rm || !curso || !telefone) {
+            Alert.alert('Erro', 'Preencha todos os campos obrigatórios')
+            return
+        }
+
+        if (senha.length <= 8) {
+            Alert.alert('Erro', 'A senha deve ter mais de 8 caracteres')
+            return
+        }
+
+        try {
+            const api = await import('./lib/api')
+            await api.register({ email, password: senha, name: nome, rm, curso, telNumero: telefone })
+            Alert.alert('Sucesso', 'Cadastro realizado com sucesso!')
+            router.push('/concluido')
+        } catch (err: any) {
+            Alert.alert('Erro', err?.message || 'Erro ao cadastrar')
+        }
+    }
 
     const [mostrarSenha, setMostrarSenha] = useState(false)
 
@@ -175,7 +191,7 @@ export default function CadastroPage() {
 
                     <TouchableOpacity
                         style={style.botao}
-                        onPress={() => router.push("/concluido")}
+                        onPress={handleRegister}
                     >
                         <Text style={style.textoBotao}>Cadastrar</Text>
                     </TouchableOpacity>
