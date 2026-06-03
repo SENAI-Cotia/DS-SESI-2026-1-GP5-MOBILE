@@ -1,5 +1,65 @@
 import { useRouter } from "expo-router"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import {
+    Image,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View
+} from "react-native"
+
+import { Ionicons } from "@expo/vector-icons"
+
+export default function PaginaInicio() {
+
+    const router = useRouter()
+
+    const [busca, setBusca] = useState("")
+    const [mostrarFiltro, setMostrarFiltro] = useState(false)
+    const [cursoSelecionado, setCursoSelecionado] = useState("")
+    const [posts, setPosts] = useState([])
+
+    const cursos = [
+        "Todos",
+        "Desenvolvimento de Sistemas",
+        "Administração",
+        "RH",
+        "Marketing",
+        "Nutrição",
+    ]
+
+    async function buscarPosts() {
+
+        try {
+
+            const response = await fetch("http://10.92.199.28:3000/produtos")
+
+            const data = await response.json()
+
+            setPosts(data)
+
+        } catch (error) {
+
+            console.log(error)
+
+        }
+
+    }
+
+    useEffect(() => {
+
+        buscarPosts()
+
+    }, [])
+
+    const postsFiltrados =
+        cursoSelecionado === "" || cursoSelecionado === "Todos"
+            ? posts
+            : posts.filter(
+                (post) => post.user.curso === cursoSelecionado
+            )
 
 import {
   Image,
@@ -54,26 +114,10 @@ export default function Comunidade() {
       fotoPerfil: "https://scontent.fcgh15-1.fna.fbcdn.net/v/t39.30808-6/679881179_27412836014984980_3928926536147438789_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=20G9IkgqNzUQ7kNvwGs8tpE&_nc_oc=AdphC2QDaoIWv9vnSAIK45PvkcpEVf1FyRczSxPwKLDID_s-q9F_5uiflpKnOTnBMi4&_nc_zt=23&_nc_ht=scontent.fcgh15-1.fna&_nc_gid=Y9T6Bv12-ogtE84r32T4yQ&_nc_ss=7b289&oh=00_Af4RzQ6ewfqsR2gDXyew_v_0unaJc5wbpbOsYWfGAkl6SQ&oe=6A0A55B0"
     },
 
-    {
-      id: 3,
-      nome: "Evanildo dos Santos",
-      curso: "Administração",
-      tempo: "Há 5 segundos",
-      texto: "Vou participar de um workshop de administração, quem quiser ir comigo, só clicar aí embaixo!",
-      imagem: "https://www.bentoquirino.com.br/novo/wp-content/uploads/2022/09/workshop-adm-1024x1024.png",
-      fotoPerfil: "https://i.pinimg.com/736x/ee/7d/79/ee7d79d3ae2167e4a27e0076b2ea71a8.jpg"
-    },
-
-    {
-      id: 4,
-      nome: "Lorena Vitória",
-      curso: "Administração",
-      tempo: "Há 1 mês",
-      texto: "Gente! Estou vendendo meu tablet seminovo, da Samsung, bateria ótima, armazenamento 128gb, em ótimo estado, com capinha e carregador, interessados me chamem!! 💗",
-      imagem: "https://imgs.extra.com.br/1562531011/1xg.jpg?imwidth=500",
-      fotoPerfil: "https://img.magnific.com/fotos-gratis/retrato-de-mulher-jovem-e-bonita-ao-ar-livre-no-parque_231208-4664.jpg?semt=ais_hybrid&w=740&q=80"
-    },
-  ]
+            <ScrollView
+                contentContainerStyle={style.scrollContainer}
+                showsVerticalScrollIndicator={false}
+            >
 
   const postsFiltrados =
     cursoSelecionado === "" || cursoSelecionado === "Todos"
@@ -82,43 +126,23 @@ export default function Comunidade() {
           (post) => post.curso === cursoSelecionado
         )
 
-  return (
-    <View style={style.fundo}>
+                    <TouchableOpacity>
+                        <Ionicons name="add" size={30} color="#e01a5f" />
+                    </TouchableOpacity>
 
-      <ScrollView
-        contentContainerStyle={style.scrollContainer}
-        showsHorizontalScrollIndicator={false}
-      >
+                    <Text style={style.titulo}>
+                        COMUNIDADE
+                    </Text>
 
-        <View style={style.header}>
+                    <TouchableOpacity>
+                        <Ionicons
+                            name="notifications-outline"
+                            size={26}
+                            color="#e01a5f"
+                        />
+                    </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => router.push("/novoProduto")}
-          >
-            <Ionicons
-              name="add"
-              size={30}
-              color="#e01a5f"
-            />
-          </TouchableOpacity>
-
-          <Text style={style.titulo}>
-            COMUNIDADE
-          </Text>
-
-          <TouchableOpacity>
-            <Ionicons
-              name="notifications-outline"
-              size={26}
-              color="#e01a5f"
-            />
-          </TouchableOpacity>
-
-        </View>
-
-        <View style={style.linhaPesquisa}>
-
-          <View style={style.buscaContainer}>
+                </View>
 
             <TextInput
               style={style.inputBusca}
@@ -126,18 +150,38 @@ export default function Comunidade() {
               onChangeText={setBusca}
             />
 
-            <Ionicons
-              name="search"
-              size={20}
-              color="#fff"
-            />
+                    <View style={style.buscaContainer}>
 
-          </View>
+                        <TextInput
+                            style={style.inputBusca}
+                            value={busca}
+                            onChangeText={setBusca}
+                            placeholder="Pesquisar..."
+                            placeholderTextColor="#fff"
+                        />
 
-          <TouchableOpacity
-            style={style.botaoFiltro}
-            onPress={() => setMostrarFiltro(!mostrarFiltro)}
-          >
+                        <Ionicons
+                            name="search"
+                            size={20}
+                            color="#fff"
+                        />
+
+                    </View>
+
+                    <TouchableOpacity
+                        style={style.botaoFiltro}
+                        onPress={() =>
+                            setMostrarFiltro(!mostrarFiltro)
+                        }
+                    >
+
+                        <Ionicons
+                            name="filter-sharp"
+                            size={20}
+                            color="#e01a5f"
+                        />
+
+                    </TouchableOpacity>
 
             <Ionicons
               name="filter-sharp"
@@ -170,9 +214,20 @@ export default function Comunidade() {
                 }}
               >
 
-                <Text style={style.textoFiltro}>
-                  {curso}
-                </Text>
+                            <TouchableOpacity
+                                key={index}
+                                style={[
+                                    style.itemFiltro,
+                                    cursoSelecionado === curso &&
+                                    style.itemSelecionado
+                                ]}
+                                onPress={() => {
+
+                                    setCursoSelecionado(curso)
+                                    setMostrarFiltro(false)
+
+                                }}
+                            >
 
                 <Ionicons
                   name="chevron-forward"
@@ -199,268 +254,270 @@ export default function Comunidade() {
                 style={style.fotoPerfil}
               />
 
-              <View
-                style={{
-                  flex: 1,
-                  marginLeft: 10
-                }}
-              >
+                {postsFiltrados.map((post) => (
 
-                <Text style={style.nomePerfil}>
-                  {post.nome}
-                </Text>
+                    <View key={post.id} style={style.card}>
 
-                <Text style={style.cursoPerfil}>
-                  {post.curso}
-                </Text>
+                        <View style={style.perfilContainer}>
 
-              </View>
-            </View>
+                            <Image
+                                source={{
+                                    uri: "https://i.pravatar.cc/300"
+                                }}
+                                style={style.fotoPerfil}
+                            />
 
-            <Text style={style.tempoPost}>
-              {post.tempo}
-            </Text>
+                            <View
+                                style={{
+                                    flex: 1,
+                                    marginLeft: 10
+                                }}
+                            >
 
-            <Text style={style.textoPost}>
-              {post.texto}
-            </Text>
+                                <Text style={style.nomePerfil}>
+                                    {post.user.name}
+                                </Text>
 
-            <View style={style.produtoContainer}>
+                                <Text style={style.cursoPerfil}>
+                                    {post.user.curso}
+                                </Text>
 
-              <Image
-                source={{ uri: post.imagem }}
-                style={style.imagemProduto}
-                resizeMode="cover"
-              />
+                            </View>
 
-              <TouchableOpacity style={style.setaDireita}>
+                        </View>
 
-                <Ionicons
-                  name="chevron-forward"
-                  size={20}
-                  color="#e01a5f"
-                />
+                        <Text style={style.tempoPost}>
+                            Produto publicado
+                        </Text>
 
-              </TouchableOpacity>
+                        <Text style={style.textoPost}>
+                            {post.descricao}
+                        </Text>
 
-            </View>
+                        <View style={style.produtoContainer}>
 
-            <TouchableOpacity style={style.botaoVerMais}>
+                            <Image
+                                source={{ uri: post.imagem }}
+                                style={style.imagemProduto}
+                                resizeMode="cover"
+                            />
 
-              <Text style={style.textoVerMais}>
-                Ver mais
-              </Text>
+                            <TouchableOpacity
+                                style={style.setaDireita}
+                            >
 
-            </TouchableOpacity>
+                                <Ionicons
+                                    name="chevron-forward"
+                                    size={20}
+                                    color="#e01a5f"
+                                />
 
-          </View>
-        ))}
+                            </TouchableOpacity>
 
-      </ScrollView>
+                        </View>
 
-    </View>
-  )
+                        <TouchableOpacity
+                            style={style.botaoVerMais}
+                        >
+
+                            <Text style={style.textoVerMais}>
+                                Ver mais
+                            </Text>
+
+                        </TouchableOpacity>
+
+                    </View>
+
+                ))}
+
+            </ScrollView>
+
+        </View>
+
+    )
 }
 
 const style = StyleSheet.create({
 
-  fundo: {
-    flex: 1,
-    backgroundColor: "#F9F4F6"
-  },
+    fundo: {
+        flex: 1,
+        backgroundColor: "#F9F4F6"
+    },
 
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 20,
-    paddingTop: 10,
-  },
+    header: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        paddingHorizontal: 20,
+        paddingTop: 10,
+    },
 
-  iconTop: {
-    fontSize: 24,
-    color: "#e01a5f",
-    fontWeight: "bold"
-  },
+    titulo: {
+        fontSize: 35,
+        fontWeight: "bold"
+    },
 
-  titulo: {
-    fontSize: 35,
-    fontWeight: "bold"
-  },
+    buscaContainer: {
+        backgroundColor: "#e01a5f",
+        marginTop: 15,
+        borderRadius: 25,
+        flexDirection: "row",
+        alignItems: "center",
+        paddingHorizontal: 15,
+        height: 40,
+        width: "50%",
+    },
 
-  buscaContainer: {
-    backgroundColor: "#e01a5f",
-    marginTop: 15,
-    borderRadius: 25,
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: 15,
-    height: 40,
-    width: "50%",
-  },
+            <TouchableOpacity style={style.botaoVerMais}>
 
-  inputBusca: {
-    flex: 1,
-    color: "#fff",
-    fontSize: 14,
-  },
+    scrollContainer: {
+        paddingHorizontal: 20,
+        paddingTop: 20,
+        paddingBottom: 100,
+        marginTop: 25,
+    },
 
-  iconBusca: {
-    color: "#fff",
-    fontSize: 18,
-  },
+    card: {
+        backgroundColor: "#e6dada",
+        borderRadius: 35,
+        padding: 20,
+        marginBottom: 25,
+        shadowColor: "#000",
+        shadowOpacity: 0.1,
+        shadowRadius: 10,
+        elevation: 5
+    },
 
-  scrollContainer: {
-    paddingHorizontal: 20,
-    paddingTop: 20,
-    paddingBottom: 100,
-    marginTop: 25,
-  },
+    perfilContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        marginBottom: 10
+    },
 
-  card: {
-    backgroundColor: "#e6dada",
-    borderRadius: 35,
-    padding: 20,
-    marginBottom: 25,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 5
-  },
+    fotoPerfil: {
+        width: 45,
+        height: 45,
+        borderRadius: 22.5,
+    },
 
-  perfilContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 10
-  },
+    nomePerfil: {
+        fontSize: 16,
+        fontWeight: "bold",
+        color: "#e01a5f"
+    },
 
-  fotoPerfil: {
-    width: 45,
-    height: 45,
-    borderRadius: 22.5,
-  },
+    cursoPerfil: {
+        fontSize: 12,
+        color: "#666"
+    },
 
-  nomePerfil: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#e01a5f"
-  },
+    tempoPost: {
+        fontSize: 13,
+        color: "#000",
+        lineHeight: 18,
+        marginBottom: 15
+    },
 
-  cursoPerfil: {
-    fontSize: 12,
-    color: "#666"
-  },
+    textoPost: {
+        fontSize: 13,
+        color: "#000",
+        lineHeight: 18,
+        marginBottom: 15,
+    },
 
-  tempoPost: {
-    fontSize: 13,
-    color: "#000",
-    lineHeight: 18,
-    marginBottom: 15
-  },
+    produtoContainer: {
+        width: "100%",
+        height: 200,
+        backgroundColor: "#f9f9f9",
+        borderRadius: 20,
+        justifyContent: "center",
+        alignItems: "center",
+        borderWidth: 1,
+        borderColor: "#eee",
+        position: "relative"
+    },
 
-  textoPost: {
-    fontSize: 13,
-    color: "#000",
-    lineHeight: 18,
-    marginBottom: 15,
-  },
+    imagemProduto: {
+        width: "100%",
+        height: "100%",
+        borderRadius: 20,
+    },
 
-  produtoContainer: {
-    width: "100%",
-    height: 200,
-    backgroundColor: "#f9f9f9",
-    borderRadius: 20,
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 1,
-    borderColor: "#eee",
-    position: "relative"
-  },
+    setaDireita: {
+        position: "absolute",
+        right: -10,
+        backgroundColor: "#fff",
+        width: 30,
+        height: 30,
+        borderRadius: 15,
+        justifyContent: "center",
+        alignItems: "center",
+        elevation: 3
+    },
 
-  imagemProduto: {
-    width: "100%",
-    height: "100%",
-    borderRadius: 20,
-  },
+    botaoVerMais: {
+        backgroundColor: "#e01a5f",
+        alignSelf: "center",
+        paddingHorizontal: 30,
+        paddingVertical: 6,
+        borderRadius: 15,
+        marginTop: 15
+    },
 
-  setaDireita: {
-    position: "absolute",
-    right: -10,
-    backgroundColor: "#fff",
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    justifyContent: "center",
-    alignItems: "center",
-    elevation: 3
-  },
+    textoVerMais: {
+        color: "#fff",
+        fontSize: 12,
+        fontWeight: "bold"
+    },
 
-  botaoVerMais: {
-    backgroundColor: "#e01a5f",
-    alignSelf: "center",
-    paddingHorizontal: 30,
-    paddingVertical: 6,
-    borderRadius: 15,
-    marginTop: 15
-  },
+    linhaPesquisa: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        marginBottom: 20,
+    },
 
-  textoVerMais: {
-    color: "#fff",
-    fontSize: 12,
-    fontWeight: "bold"
-  },
+    botaoFiltro: {
+        marginLeft: 20,
+        marginRight: 23
+    },
 
-  linhaPesquisa: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 20,
-  },
+    cardFiltro: {
+        position: "absolute",
+        top: 110,
+        right: 20,
+        width: 180,
+        backgroundColor: "#fff",
+        borderRadius: 20,
+        padding: 15,
+        elevation: 8,
+        shadowColor: "#000",
+        shadowOpacity: 0.2,
+        shadowRadius: 10,
+        zIndex: 999,
+    },
 
-  botaoFiltro: {
-    marginLeft: 20,
-    marginRight: 23
-  },
+    tituloFiltro: {
+        fontWeight: "bold",
+        fontSize: 14,
+        marginBottom: 10,
+    },
 
-  cardFiltro: {
-    position: "absolute",
-    top: 110,
-    right: 20,
-    width: 180,
-    backgroundColor: "#fff",
-    borderRadius: 20,
-    padding: 15,
-    elevation: 8,
-    shadowColor: "#000",
-    shadowOpacity: 0.2,
-    shadowRadius: 10,
-    zIndex: 999,
-  },
+    itemFiltro: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        backgroundColor: "#f2f2f2",
+        borderRadius: 20,
+        paddingVertical: 8,
+        paddingHorizontal: 10,
+        marginBottom: 8,
+    },
 
-  tituloFiltro: {
-    fontWeight: "bold",
-    fontSize: 14,
-    marginBottom: 10,
-  },
+    itemSelecionado: {
+        backgroundColor: "#FFC0D6",
+    },
 
-  itemFiltro: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: "#f2f2f2",
-    borderRadius: 20,
-    paddingVertical: 8,
-    paddingHorizontal: 10,
-    marginBottom: 8,
-  },
-
-  itemSelecionado: {
-    backgroundColor: "#FFC0D6",
-  },
-
-  textoFiltro: {
-    fontSize: 12,
-    fontWeight: "600",
-  },
+const style = StyleSheet.create({
 
 })

@@ -1,4 +1,5 @@
 import {
+    Alert,
     Dimensions,
     Image,
     ScrollView,
@@ -6,13 +7,13 @@ import {
     Text,
     TouchableOpacity,
     View,
-} from "react-native"
+} from "react-native";
 
-import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import * as ImagePicker from 'expo-image-picker';
-import { SafeAreaView } from "react-native-safe-area-context"
-import { useState } from "react";
 import { router } from "expo-router";
+import { useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const { width } = Dimensions.get("window")
 
@@ -82,6 +83,36 @@ export default function ultimascompras() {
 
         if (!resultado.canceled) {
             setImagem(resultado.assets[0].uri)
+        }
+    }
+
+    const handlePublish = async () => {
+        if (!nomeProduto || !precoProduto) {
+            Alert.alert('Erro', 'Preencha nome e preço do produto')
+            return
+        }
+
+        const precoParsed = parseFloat(String(precoProduto).replace(/[^0-9.,]/g, '').replace(',', '.')) || 0
+
+        const payload = {
+            name: nomeProduto,
+            categoria: 'Outros',
+            preco: precoParsed,
+            condicao: 'Usado',
+            imagem: imagem || undefined,
+            descricao: descricao || '',
+            disponibilidade: true,
+            atacado: false,
+            userId: 1 // TODO: substituir pelo id do usuário logado
+        }
+
+        try {
+            const api = await import('./lib/api')
+            await api.createProduct(payload)
+            Alert.alert('Sucesso', 'Seu produto foi cadastrado com sucesso!')
+            setPublicado(true)
+        } catch (err: any) {
+            Alert.alert('Erro', err?.message || 'Erro ao cadastrar produto')
         }
     }
 
@@ -358,7 +389,7 @@ export default function ultimascompras() {
                                 alignItems: "center",
                             }
                         ]}
-                        onPress={() => setPublicado(!publicado)}
+                        onPress={handlePublish}
                     >
 
                         <Text style={style.entregue}>
