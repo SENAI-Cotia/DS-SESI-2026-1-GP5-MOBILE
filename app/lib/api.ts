@@ -1,4 +1,4 @@
-const DEFAULT_BASE_URL = "http://10.0.2.2:3000" // Android emulator -> use your machine host for device
+const DEFAULT_BASE_URL = "http://10.92.199.14:3000" // Android emulator -> use your machine host for device
 
 let baseUrl = DEFAULT_BASE_URL
 
@@ -32,7 +32,7 @@ export async function login(payload: { email: string; password: string }) {
   return request('/login', { method: 'POST', body: JSON.stringify(payload) })
 }
 
-export async function createProduct(payload: { name: string; categoria: string; preco: number; condicao: string; imagem?: string; descricao: string; disponibilidade?: boolean; atacado?: boolean; userId: number }) {
+export async function createProduct(payload: { name: string; preco: number; condicao: number; imagem?: string[]; descricao: string; disponibilidade?: boolean; atacado?: boolean; userId: number }) {
   return request('/produtos', { method: 'POST', body: JSON.stringify(payload) })
 }
 
@@ -41,4 +41,55 @@ export async function listProducts(categoria?: string) {
   return request(`/produtos${q}`)
 }
 
-export default { setBaseUrl, register, login, createProduct, listProducts }
+export async function getProduct(id: number) {
+  return request(`/produtos/${id}`)
+}
+
+export async function listMyProducts(userId: number) {
+  return request(`/produtos/meus?userId=${Number(userId)}`)
+}
+
+export async function listBuyerInterests(userId: number) {
+  return request(`/produtos/interesses/comprador?userId=${Number(userId)}`)
+}
+
+export async function listSellerInterests(userId: number) {
+  return request(`/produtos/interesses/vendedor?userId=${Number(userId)}`)
+}
+
+export async function createInterest(payload: { userId: number; produtoId: number; localId?: number; horarioId?: number; local?: unknown; horario?: unknown }) {
+  return request('/produtos/interesse', { method: 'POST', body: JSON.stringify(payload) })
+}
+
+export async function cancelInterest(id: number, userId: number) {
+  return request(`/produtos/interesses/${id}`, { method: 'DELETE', body: JSON.stringify({ userId }) })
+}
+
+export async function updateProduct(id: number, payload: Partial<{ name: string; preco: number; condicao: number; imagem: string[]; descricao: string; disponibilidade: boolean; userId: number; localId: number; horarioId: number; local: unknown; horario: unknown }>) {
+  return request(`/produtos/${id}`, { method: 'PUT', body: JSON.stringify(payload) })
+}
+
+export async function updateUser(id: number, payload: Partial<{ email: string; password?: string; name: string; rm: string | number; curso: string; telNumero: string; funcao?: string }>) {
+  return request(`/cadastro/${id}`, { method: 'PUT', body: JSON.stringify(payload) })
+}
+
+export async function deleteProduct(id: number, userId: number) {
+  return request(`/produtos/${id}`, { method: 'DELETE', body: JSON.stringify({ userId }) })
+}
+
+export default {
+  setBaseUrl,
+  register,
+  login,
+  createProduct,
+  listProducts,
+  getProduct,
+  listMyProducts,
+  listBuyerInterests,
+  listSellerInterests,
+  createInterest,
+  cancelInterest,
+  updateProduct,
+  updateUser,
+  deleteProduct,
+}

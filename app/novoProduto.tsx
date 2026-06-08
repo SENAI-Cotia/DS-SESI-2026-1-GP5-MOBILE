@@ -12,8 +12,10 @@ import {
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import * as ImagePicker from 'expo-image-picker';
 import { router } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
+import api from "./lib/api";
+import { getUserId } from "./lib/session";
 
 const { width } = Dimensions.get("window")
 
@@ -22,6 +24,11 @@ export default function ultimascompras() {
     const [publicado, setPublicado] = useState(false)
     const [imagem, setImagem] = useState<string | null>(null)
     const [descricao, setDescricao] = useState("Descrição do produto...")
+    const [userId, setUserId] = useState<number | null>(null)
+
+    useEffect(() => {
+        getUserId().then((id) => setUserId(id)).catch(console.error)
+    }, [])
 
     const [nomeProduto, setNomeProduto] = useState("NOME")
     const [precoProduto, setPrecoProduto] = useState("PREÇO (R$)")
@@ -94,20 +101,26 @@ export default function ultimascompras() {
 
         const precoParsed = parseFloat(String(precoProduto).replace(/[^0-9.,]/g, '').replace(',', '.')) || 0
 
+        if (!userId) {
+            Alert.alert('Erro', 'Faça login antes de publicar um produto.')
+            router.push('/')
+            return
+        }
+
         const payload = {
+            userId,
             name: nomeProduto,
-            categoria: 'Outros',
             preco: precoParsed,
-            condicao: 'Usado',
-            imagem: imagem || undefined,
-            descricao: descricao || '',
+            condicao: 1,
+            imagem: imagem ? [imagem] : [],
+            descricao,
             disponibilidade: true,
-            atacado: false,
-            userId: 1 // TODO: substituir pelo id do usuário logado
+            local: locais,
+            horario: horarios,
         }
 
         try {
-            const api = await import('./lib/api')
+        
             await api.createProduct(payload)
             Alert.alert('Sucesso', 'Seu produto foi cadastrado com sucesso!')
             setPublicado(true)
@@ -219,7 +232,7 @@ export default function ultimascompras() {
 
                     <View style={style.editarCampo}>
 
-                        
+
 
 
 
@@ -236,16 +249,16 @@ export default function ultimascompras() {
                         >
 
                             <Text style={style.nomeProduto}>
-                            {nomeProduto}
-                        <MaterialCommunityIcons
-                                name="pencil"
-                                size={14}
-                                color="#000"
-                            />
-                        
-                        </Text>
+                                {nomeProduto}
+                                <MaterialCommunityIcons
+                                    name="pencil"
+                                    size={14}
+                                    color="#000"
+                                />
 
-                            
+                            </Text>
+
+
 
                         </TouchableOpacity>
 

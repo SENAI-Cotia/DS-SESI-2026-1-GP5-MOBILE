@@ -1,19 +1,100 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useState } from "react";
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { useEffect, useState } from "react";
+import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import api from "../../lib/api";
+import { getUserSession, saveUserSession } from "../../lib/session";
 
-export default function editarPerfil() {
-    const router = useRouter()
+export default function EditarPerfil() {
+    const router = useRouter();
 
-    const [nome, setNome] = useState("Pietro")
-    const [sobrenome, setSobrenome] = useState("Augusto")
-    const [celular, setCelular] = useState("(11) 91234-5678")
-    const [email, setEmail] = useState("pietro.augusto@gmail.com")
-    const [identidade, setIdentidade] = useState("123-456-789-10")
-    const [nascimento, setNascimento] = useState("01/02/2003")
-    const [rm, setRM] = useState("112233")
-    const [genero, setGenero] = useState("Masculino")
+    const [nome, setNome] = useState("");
+    const [sobrenome, setSobrenome] = useState("");
+    const [celular, setCelular] = useState("");
+    const [email, setEmail] = useState("");
+    const [identidade, setIdentidade] = useState("");
+    const [nascimento, setNascimento] = useState("");
+    const [genero, setGenero] = useState("Masculino");
+    const [rm, setRM] = useState("");
+    const [curso, setCurso] = useState("");
+    const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
+    const [userId, setUserId] = useState<number | null>(null);
+
+    useEffect(() => {
+        getUserSession()
+            .then((user) => {
+                if (!user) {
+                    router.push('/');
+                    return;
+                }
+
+                setUserId(user.id);
+                const [first, ...rest] = user.name?.split(' ') ?? [''];
+                setNome(first ?? '');
+                setSobrenome(rest.join(' ') ?? '');
+                setCelular(user.telNumero ?? '');
+                setEmail(user.email ?? '');
+                setRM(user.rm ?? '');
+                setCurso(user.curso ?? '');
+            })
+            .catch((error) => {
+                console.error(error);
+                Alert.alert('Erro', 'Não foi possível carregar os dados do usuário.');
+            })
+            .finally(() => setLoading(false));
+    }, [router]);
+
+    const handleSave = async () => {
+        if (!userId) {
+            router.push('/');
+            return;
+        }
+
+        const name = [nome, sobrenome].filter(Boolean).join(' ').trim();
+
+        if (!name || !email) {
+            Alert.alert('Erro', 'Preencha nome e email corretamente.');
+            return;
+        }
+
+        setSaving(true);
+
+        try {
+            await api.updateUser(userId, {
+                name,
+                email,
+                rm,
+                curso,
+                telNumero: celular,
+            });
+
+            await saveUserSession({
+                id: userId,
+                email,
+                name,
+                rm,
+                curso,
+                telNumero: celular,
+            });
+
+            Alert.alert('Sucesso', 'Dados atualizados com sucesso!');
+            router.push('/(tabs)/perfil/perfil');
+        } catch (error: any) {
+            console.error(error);
+            Alert.alert('Erro', error?.message || 'Falha ao atualizar perfil.');
+        } finally {
+            setSaving(false);
+        }
+    };
+
+    if (loading) {
+        return (
+            <View style={style.fundo}>
+                <Text style={style.loadingText}>Carregando...</Text>
+            </View>
+        );
+    }
 
     return (
         <View style={style.fundo}>
@@ -21,10 +102,7 @@ export default function editarPerfil() {
             <View style={style.bolaTopo} />
             <View style={style.bolaBaixo} />
 
-            <TouchableOpacity
-                style={style.botaoVoltar}
-                onPress={() => router.back()}
-            >
+            <TouchableOpacity style={style.botaoVoltar} onPress={() => router.push("/(tabs)/perfil/perfil")}>
                 <Ionicons name="chevron-back" size={30} color="#fff" />
             </TouchableOpacity>
 
@@ -61,38 +139,18 @@ export default function editarPerfil() {
                     </View>
 
                     <View style={style.campoInteiro}>
-                        <Text style={style.label}>Número de Identidade</Text>
-                        <TextInput style={style.input} value={identidade} onChangeText={setIdentidade} />
-                    </View>
-
-                    <View style={style.campoInteiro}>
-                        <Text style={style.label}>Data de Nascimento</Text>
-                        <TextInput style={style.input} value={nascimento} onChangeText={setNascimento} />
-                    </View>
-
-                    <View style={style.campoInteiro}>
                         <Text style={style.label}>RM</Text>
-                        <TextInput style={style.input} value={rm} onChangeText={setRM} />
+                        <TextInput style={style.input} value={rm} onChangeText={setRM} placeholder="RM" />
                     </View>
 
                     <View style={style.campoInteiro}>
-                        <Text style={style.label}>Gênero</Text>
-                        <View style={style.seletorGenero}>
-                            <TouchableOpacity
-                                style={[style.opcaoGenero, genero === "Masculino" && style.opcaoAtiva]}
-                                onPress={() => setGenero("Masculino")}
-                            >
-                                <Text style={[style.textoGenero, genero === "Masculino" && style.textoAtivo]}>Masculino</Text>
-                            </TouchableOpacity>
-
-                            <TouchableOpacity
-                                style={[style.opcaoGenero, genero === "Feminino" && style.opcaoAtiva]}
-                                onPress={() => setGenero("Feminino")}
-                            >
-                                <Text style={[style.textoGenero, genero === "Feminino" && style.textoAtivo]}>Feminino</Text>
-                            </TouchableOpacity>
-                        </View>
+                        <Text style={style.label}>Curso</Text>
+                        <TextInput style={style.input} value={curso} onChangeText={setCurso} placeholder="Curso" />
                     </View>
+
+                    <TouchableOpacity style={[style.saveButton, saving && style.saveButtonDisabled]} onPress={handleSave} disabled={saving}>
+                        <Text style={style.saveButtonText}>{saving ? 'Salvando...' : 'Salvar alterações'}</Text>
+                    </TouchableOpacity>
 
                 </View>
             </ScrollView>
@@ -227,6 +285,27 @@ const style = StyleSheet.create({
     textoAtivo: {
         color: "#fff",
         fontWeight: "bold",
+    },
+
+    loadingText: {
+        textAlign: 'center',
+        marginTop: 40,
+        color: '#444'
+    },
+    saveButton: {
+        backgroundColor: "#e01a5f",
+        borderRadius: 20,
+        paddingVertical: 15,
+        alignItems: "center",
+        marginTop: 10,
+    },
+    saveButtonDisabled: {
+        opacity: 0.6,
+    },
+    saveButtonText: {
+        color: "#fff",
+        fontWeight: "bold",
+        fontSize: 16,
     },
 
 

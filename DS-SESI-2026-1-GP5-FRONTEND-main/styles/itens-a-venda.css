@@ -1,0 +1,236 @@
+/* itens-a-venda.css */
+
+.itens-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.itens-header h2 {
+    font-size: 22px;
+}
+
+.btn-novo-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background-color: #d43768;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    transition: background 0.2s;
+}
+
+.btn-novo-item:hover {
+    background-color: #b82d58;
+}
+
+.itens-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.item-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: #fafafa;
+    border: 1px solid #eee;
+    border-radius: 16px;
+    padding: 16px 20px;
+    transition: box-shadow 0.2s;
+}
+
+.item-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.item-img {
+    width: 80px;
+    height: 80px;
+    flex-shrink: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #f0f0f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.item-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.item-info {
+    flex: 1;
+}
+
+.item-name {
+    font-size: 16px;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.item-desc {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 6px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.item-price {
+    font-weight: 700;
+    color: #d43768;
+    font-size: 15px;
+}
+
+.item-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.btn-ver {
+    background: #d43768;
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 13px;
+    text-decoration: none;
+    text-align: center;
+    transition: background 0.2s;
+}
+
+.btn-ver:hover {
+    background: #b82d58;
+}
+
+.msg-vazia,
+.empty-state {
+    text-align: center;
+    color: #888;
+    padding: 40px 0;
+}
+
+.empty-state i {
+    font-size: 48px;
+    color: #ddd;
+    margin-bottom: 16px;
+    display: block;
+}
+
+.empty-state p {
+    margin-bottom: 20px;
+}
+
+/* Botões editar e excluir */
+.btn-editar {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #f0f0f0;
+    color: #333;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 13px;
+    text-decoration: none;
+    text-align: center;
+    transition: background 0.2s;
+    font-weight: 600;
+}
+
+.btn-editar img {
+    width: 14px;
+    height: 14px;
+}
+
+.btn-editar:hover {
+    background: #e0e0e0;
+}
+
+.btn-excluir {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #fff0f3;
+    color: #d43768;
+    border: 1px solid #f5c0ce;
+    padding: 8px 14px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.btn-excluir img {
+    width: 14px;
+    height: 14px;
+}
+
+.btn-excluir:hover {
+    background: #ffe0e8;
+    border-color: #d43768;
+}
+
+.btn-vendido {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #c8e6c9;
+    padding: 8px 14px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.btn-vendido:hover:not(:disabled) {
+    background: #c8e6c9;
+    border-color: #2e7d32;
+}
+
+.btn-vendido:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-vendido i {
+    width: 14px;
+    height: 14px;
+}
+
+.status-vendido {
+    color: #dc2626;
+    font-weight: 900;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-left: 8px;
+}
+
+.btn-reativar {
+    background: #16a34a !important;
+    color: #fff !important;
+}
+
+.btn-reativar:hover {
+    background: #15803d !important;
+}

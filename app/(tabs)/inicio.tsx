@@ -1,47 +1,65 @@
+import { Ionicons } from "@expo/vector-icons"
 import { useRouter } from "expo-router"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
+import api from "../lib/api"
+
+interface Produto {
+    id: number;
+    name: string;
+    descricao: string;
+    imagem?: string[];
+    disponibilidade?: boolean;
+    user: {
+        name: string;
+        curso: string;
+    };
+}
+
+
 export default function PaginaInicio() {
 
     const router = useRouter()
     const [busca, setBusca] = useState("")
+    const [produtos, setProdutos] = useState<Produto[]>([])
+    const [loading, setLoading] = useState(true)
 
+    useEffect(() => {
+        api.listProducts()
+            .then((data) => {
+                const disponiveis = Array.isArray(data)
+                    ? data.filter((produto: Produto) => produto.disponibilidade !== false)
+                    : []
+                setProdutos(disponiveis)
+            })
+            .catch((error) => {
+                console.error('Erro carregando produtos:', error)
+            })
+            .finally(() => setLoading(false))
+    }, [])
 
-    const posts = [
-        {
-            id: 1,
-            nome: "Daniel Rosa",
-            curso: "Marketing",
-            tempo: "Há 8 horas",
-            texto: "Pessoal! Comprei um caderno inteligente no início do ano mas acabei não usando e também não pretendo usar. Interessados, me chamem no chat!",
-            fotoPerfil: "https://images.unsplash.com/photo-1654110455429-cf322b40a906?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Zm90byUyMGRvJTIwcGVyZmlsfGVufDB8fDB8fHww",
-            imagem: "https://m.media-amazon.com/images/I/61jxpLGWDHL._AC_SY355_.jpg"
-        },
-        {
-            id: 2,
-            nome: "Sarah Livia",
-            curso: "Nutrição",
-            tempo: "Há 2 dias",
-            texto: "A sobremesa que você precisa aqui!!! 🤎🤍 Estou vendendo bolos de pote pessoal! São todos bem recheados, uma delícia. Me chamem para mais informações!",
-            imagem: "https://www.receiteria.com.br/wp-content/uploads/bolo-de-pote-de-chocolate-com-morango-fit-1-730x730.jpg",
-            fotoPerfil: "https://wallpapers.com/images/hd/professional-profile-pictures-4162-x-6243-ds59e3wn0uignqdp.jpg"
-        }
-
-    ]
+    const produtosFiltrados = produtos.filter((produto) => {
+        const texto = busca.toLowerCase()
+        return (
+            produto.name.toLowerCase().includes(texto) ||
+            produto.descricao.toLowerCase().includes(texto) ||
+            produto.user?.name.toLowerCase().includes(texto) ||
+            produto.user?.curso?.toLowerCase().includes(texto)
+        )
+    })
 
     return (
 
         <View style={style.fundo}>
-            
+
 
             <ScrollView contentContainerStyle={style.scrollContainer} showsHorizontalScrollIndicator={false}>
 
                 <View style={style.header}>
 
                     <TouchableOpacity
-                    onPress={() => router.push("/novoProduto")}
-                    
+                        onPress={() => router.push("/novoProduto")}
+
                     ><Ionicons name="add" size={30} color="#e01a5f" /></TouchableOpacity>
                     <Image source={require("../../assets/images/logo.png")} style={style.logo}></Image>
 
@@ -60,25 +78,36 @@ export default function PaginaInicio() {
                     <Ionicons name="search" size={20} color="#fff" />
                 </View>
 
-                {posts.map((post) => (
+                {produtosFiltrados.map((post) => (
                     <View key={post.id} style={style.card}>
                         <View style={style.perfilContainer}>
                             <Image
-                                source={{ uri: post.fotoPerfil }}
+                                source={{
+                                    uri: "https://i.pravatar.cc/150"
+                                }}
                                 style={style.fotoPerfil}
                             />
                             <View style={{ flex: 1, marginLeft: 10 }} >
-                                <Text style={style.nomePerfil}>{post.nome}</Text>
-                                <Text style={style.cursoPerfil}>{post.curso}</Text>
+                                <Text style={style.nomePerfil}>
+                                    {post.user.name}
+                                </Text>
+
+                                <Text style={style.cursoPerfil}>
+                                    {post.user.curso}
+                                </Text>
                             </View>
                         </View>
-                        <Text style={style.tempoPost}>{post.tempo}</Text>
+                        {/* <Text style={style.tempoPost}>{post.tempo}</Text> */}
 
-                        <Text style={style.textoPost}>{post.texto}</Text>
+                        <Text style={style.textoPost}>{post.descricao}</Text>
 
                         <View style={style.produtoContainer}>
                             <Image
-                                source={{ uri: post.imagem }}
+                                source={{
+                                    uri:
+                                        post.imagem?.[0] ||
+                                        "https://via.placeholder.com/300"
+                                }}
                                 style={style.imagemProduto}
                                 resizeMode="cover"
                             />
@@ -87,7 +116,7 @@ export default function PaginaInicio() {
                             </TouchableOpacity>
                         </View>
 
-                        <TouchableOpacity style={style.botaoVerMais}>
+                        <TouchableOpacity style={style.botaoVerMais} onPress={() => router.push(`/produto/${post.id}`)}>
                             <Text style={style.textoVerMais}>Ver mais</Text>
                         </TouchableOpacity>
                     </View>
@@ -128,8 +157,8 @@ const style = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         paddingHorizontal: 15,
-        height: 35,
-        zIndex: 10
+        height: 40,
+        zIndex: 10,
     },
     inputBusca: {
         flex: 1,
@@ -146,7 +175,7 @@ const style = StyleSheet.create({
         paddingBottom: 100,
         marginTop: 25,
     },
-    
+
     card: {
         backgroundColor: "#e6dada",
         borderRadius: 35,

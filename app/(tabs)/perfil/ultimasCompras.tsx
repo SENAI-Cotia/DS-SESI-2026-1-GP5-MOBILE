@@ -1,8 +1,11 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useEffect, useState } from "react";
+import { Alert, Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-    
+import api from "../../lib/api";
+import { getUserId } from "../../lib/session";
+
 const ultimasCompras = [
     {
         id: 1,
@@ -43,16 +46,89 @@ const ultimasCompras = [
 
 const { width } = Dimensions.get("window")
 
+interface Produto {
+    id: number;
+    name: string;
+    descricao: string;
+    imagem?: string[];
+    preco: number;
+    disponibilidade: boolean;
+    user?: {
+        name?: string;
+        curso?: string;
+    };
+}
+
+interface Interest {
+    id: number;
+    status?: string;
+    createdAt?: string;
+    localEscolhido?: string[];
+    horarioEscolhido?: string[];
+    produto?: Produto;
+    vendedor?: {
+        name?: string;
+        email?: string;
+        curso?: string;
+    };
+}
+
 export default function ultimascompras() {
+
+    const [pedidos, setPedidos] = useState<Interest[]>([])
+    const [loading, setLoading] = useState(true)
+    const [userId, setUserId] = useState<number | null>(null)
+
+    const handleCancelInterest = async (interestId: number) => {
+        if (!userId) return
+
+        try {
+            await api.cancelInterest(interestId, userId)
+            setPedidos((current) => current.filter((pedido) => pedido.id !== interestId))
+        } catch (err: any) {
+            console.error(err)
+            Alert.alert('Erro', err?.message || 'Falha ao cancelar interesse')
+        }
+    }
+
+    useEffect(() => {
+        let mounted = true
+
+        getUserId()
+            .then((id) => {
+                if (!mounted) return
+                setUserId(id)
+                if (!id) {
+                    setLoading(false)
+                    return
+                }
+                return api.listBuyerInterests(id)
+            })
+            .then((data) => {
+                if (!mounted || !data) return
+                setPedidos(Array.isArray(data) ? data : [])
+            })
+            .catch((error) => {
+                console.error('Erro carregando pedidos:', error)
+            })
+            .finally(() => {
+                if (mounted) setLoading(false)
+            })
+
+        return () => {
+            mounted = false
+        }
+    }, [])
+
     return (
         <SafeAreaView style={style.fundo}>
 
             <TouchableOpacity
-                            style={style.botaoVoltar}
-                            onPress={() => router.back()}
-                        >
-                            <Ionicons name="chevron-back" size={30} color="#e01a5f" />
-                        </TouchableOpacity>
+                style={style.botaoVoltar}
+                onPress={() => router.back()}
+            >
+                <Ionicons name="chevron-back" size={30} color="#e01a5f" />
+            </TouchableOpacity>
 
 
             <ScrollView
@@ -66,66 +142,63 @@ export default function ultimascompras() {
 
 
                 <View style={style.container}>
-                    {ultimasCompras.map((ultimaCompra) => (
-                        <View
-                            key={ultimaCompra.id}
-                            style={[
-                                style.card,
-                                ultimaCompra.situacao.toLowerCase().includes("andamento") && style.cardAndamento
-                            ]}
-                        >
+                    {loading ? (
+                        <Text style={style.emptyText}>Carregando suas compras...</Text>
+                    ) : !userId ? (
+                        <View style={style.emptyState}>
+                            <Text style={style.emptyTitle}>Você precisa fazer login para ver suas compras.</Text>
+                            <TouchableOpacity style={style.loginButton} onPress={() => router.push('/') }>
+                                <Text style={style.loginButtonText}>Fazer login</Text>
+                            </TouchableOpacity>
+                        </View>
+                    ) : pedidos.length === 0 ? (
+                        <View style={style.emptyState}>
+                            <Text style={style.emptyTitle}>Nenhuma compra registrada ainda.</Text>
+                        </View>
+                    ) : (
+                        pedidos.map((pedido) => {
+                            const produto = pedido.produto
+                            const situacao = pedido.status || (produto?.disponibilidade ? 'Pendente' : 'Entregue')
+                            const preco = produto?.preco ? Number(produto.preco).toFixed(2).replace('.', ',') : '0,00'
+                            const locais = Array.isArray(pedido.localEscolhido) ? pedido.localEscolhido.join(', ') : (pedido.localEscolhido || '-')
+                            const horarios = Array.isArray(pedido.horarioEscolhido) ? pedido.horarioEscolhido.join(', ') : (pedido.horarioEscolhido || '-')
 
-                            <View>
+                            return (
+                                <View
+                                    key={pedido.id}
+                                    style={[
+                                        style.card,
+                                        situacao.toLowerCase() === 'concluído' && style.cardAndamento
+                                    ]}
+                                >
+                                    <View style={style.linha}>
+                                        <Image
+                                            style={style.imagem}
+                                            source={{ uri: produto?.imagem?.[0] || "https://via.placeholder.com/100" }}
+                                        />
 
-                                <View style={style.linha}>
-
-                                    <Image
-                                        style={style.imagem}
-                                        source={{ uri: ultimaCompra.image }}
-                                    />
-
-                                    <View style={style.conteudo}>
-                                        <Text
-                                            style={[
-                                                style.title,
-                                                ultimaCompra.situacao.toLowerCase().includes("andamento") && style.titleVenda
-                                            ]}
-                                        >
-                                            {ultimaCompra.title}
-                                        </Text>
-
-
-                                        <View style={style.infos}>
-                                            <Text
-                                                style={[
-                                                    style.preco,
-                                                    ultimaCompra.situacao.toLowerCase().includes("andamento") && style.infoVenda
-                                                ]}
-                                            >
-                                                R$
-                                                {ultimaCompra.preco}
-                                            </Text>
-
-                                            <Text
-                                                style={[
-                                                    style.situacao,
-                                                    ultimaCompra.situacao.toLowerCase().includes("andamento") && style.infoVenda
-                                                ]}
-                                            >
-                                                {ultimaCompra.situacao}
-                                            </Text>
+                                        <View style={style.conteudo}>
+                                            <Text style={style.title}>{produto?.name || 'Produto'}</Text>
+                                            <View style={style.infos}>
+                                                <Text style={style.preco}>{`R$ ${preco}`}</Text>
+                                                <Text style={style.situacao}>{situacao}</Text>
+                                            </View>
+                                            <Text style={style.subText}>Vendedor: {pedido.vendedor?.name || 'Desconhecido'}</Text>
+                                            <Text style={style.subText}>Local: {locais}</Text>
+                                            <Text style={style.subText}>Horário: {horarios}</Text>
                                         </View>
                                     </View>
-
+                                    <TouchableOpacity
+                                        style={style.cancelButton}
+                                        onPress={() => handleCancelInterest(pedido.id)}
+                                    >
+                                        <Text style={style.cancelButtonText}>Retirar interesse</Text>
+                                    </TouchableOpacity>
                                 </View>
-
-                            </View>
-
-                        </View>
-                    ))}
+                            )
+                        })
+                    )}
                 </View>
-
-
             </ScrollView>
 
         </SafeAreaView>
@@ -155,6 +228,63 @@ const style = StyleSheet.create({
         shadowRadius: 10,
         elevation: 5,
         marginBottom: 12
+    },
+
+    emptyState: {
+        width: "90%",
+        padding: 24,
+        borderRadius: 20,
+        borderWidth: 1,
+        borderColor: "#e01a5f",
+        alignItems: "center",
+        justifyContent: "center",
+        marginBottom: 20,
+    },
+
+    emptyTitle: {
+        fontSize: 16,
+        color: "#333",
+        textAlign: "center",
+        marginBottom: 12,
+    },
+
+    emptyText: {
+        fontSize: 14,
+        color: "#666",
+        textAlign: "center",
+        marginBottom: 20,
+    },
+
+    loginButton: {
+        backgroundColor: "#e01a5f",
+        paddingHorizontal: 16,
+        paddingVertical: 10,
+        borderRadius: 20,
+    },
+
+    loginButtonText: {
+        color: "#fff",
+        fontWeight: "bold",
+    },
+
+    subText: {
+        marginTop: 4,
+        color: "#fff",
+        fontSize: 12,
+    },
+
+    cancelButton: {
+        marginTop: 10,
+        alignSelf: 'flex-start',
+        backgroundColor: '#fff',
+        paddingVertical: 8,
+        paddingHorizontal: 14,
+        borderRadius: 20,
+    },
+
+    cancelButtonText: {
+        color: '#e01a5f',
+        fontWeight: 'bold',
     },
 
     title: {

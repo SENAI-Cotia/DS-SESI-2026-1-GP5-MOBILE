@@ -1,19 +1,46 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Link, useRouter } from "expo-router";
 import { useState } from "react";
-import { Dimensions, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Dimensions, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import api from './lib/api';
+import { saveUserSession } from './lib/session';
 
 const { width } = Dimensions.get('window');
-// Pegar
 
 export default function Index() {
-  const [cpf, setCpf] = useState("")
+  const [email, setEmail] = useState("")
   const [senha, setSenha] = useState("")
 
   const router = useRouter()
 
   const [mostrarSenha, setMostrarSenha] = useState(false)
   // Para a função de ocultar senha
+
+  const handleLogin = async () => {
+    if (!email || !senha) {
+      Alert.alert('Erro', 'Preencha email e senha')
+      return
+    }
+
+    try {
+      const result = await api.login({ email, password: senha })
+      const user = result?.user ?? result
+      if (user?.id) {
+        await saveUserSession({
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          rm: user.rm,
+          curso: user.curso,
+          telNumero: user.telNumero,
+          funcao: user.funcao,
+        })
+      }
+      router.push('/(tabs)/inicio')
+    } catch (err: any) {
+      Alert.alert('Erro', err?.message || 'Falha ao efetuar login')
+    }
+  }
 
   return (
     <View style={style.fundo}>
@@ -38,9 +65,9 @@ export default function Index() {
           <View style={style.inputArea}>
             <TextInput
               style={style.input}
-              placeholder="CPF"
-              value={cpf}
-              onChangeText={setCpf}>
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}>
             </TextInput>
 
             <MaterialCommunityIcons
@@ -71,7 +98,7 @@ export default function Index() {
 
           <TouchableOpacity
             style={style.botao}
-            onPress={() => router.push("/(tabs)/inicio")}
+            onPress={handleLogin}
           >
            <Text style={style.textoBotao}>Entrar</Text>
           </TouchableOpacity>

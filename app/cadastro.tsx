@@ -6,6 +6,8 @@ import {
     TextInput,
     TouchableOpacity, View
 } from 'react-native';
+import api from './lib/api';
+import { saveUserSession } from './lib/session';
 
 const { width } = Dimensions.get('window');
 
@@ -32,9 +34,25 @@ export default function CadastroPage() {
             return
         }
 
+        if (senha !== confirmarSenha) {
+            Alert.alert('Erro', 'A senha e a confirmação devem ser iguais')
+            return
+        }
+
         try {
-            const api = await import('./lib/api')
-            await api.register({ email, password: senha, name: nome, rm, curso, telNumero: telefone })
+            const result = await api.register({ email, password: senha, name: nome, rm, curso, telNumero: telefone })
+            const user = result?.user ?? result
+            if (user?.id) {
+                await saveUserSession({
+                    id: user.id,
+                    email: user.email,
+                    name: user.name,
+                    rm: user.rm,
+                    curso: user.curso,
+                    telNumero: user.telNumero,
+                    funcao: user.funcao,
+                })
+            }
             Alert.alert('Sucesso', 'Cadastro realizado com sucesso!')
             router.push('/concluido')
         } catch (err: any) {
