@@ -3,24 +3,23 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useTheme } from './_lib/theme';
 
 const FONT_SIZE_KEY = 'appFontSize';
-const DARK_MODE_KEY = 'appDarkMode';
 
 export default function AcessibilidadePage() {
   const router = useRouter();
+  const { darkMode, toggleDarkMode } = useTheme();
   const [fontSize, setFontSize] = useState<'small'|'medium'|'large'>('medium');
-  const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
-    AsyncStorage.getItem(FONT_SIZE_KEY).then((value) => {
+    const loadFontPreferences = async () => {
+      const value = await AsyncStorage.getItem(FONT_SIZE_KEY);
       if (value === 'small' || value === 'medium' || value === 'large') {
         setFontSize(value);
       }
-    });
-    AsyncStorage.getItem(DARK_MODE_KEY).then((value) => {
-      setDarkMode(value === 'true');
-    });
+    };
+    loadFontPreferences();
   }, []);
 
   const savePreference = async (key: string, value: string) => {
@@ -33,11 +32,7 @@ export default function AcessibilidadePage() {
   };
 
   const handleToggleDark = async () => {
-    setDarkMode((prev) => {
-      const next = !prev;
-      savePreference(DARK_MODE_KEY, String(next));
-      return next;
-    });
+    await toggleDarkMode();
   };
 
   return (

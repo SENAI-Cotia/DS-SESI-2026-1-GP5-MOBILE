@@ -1,9 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
+import { useIsFocused } from '@react-navigation/native';
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import api from "../../lib/api";
-import { getUserId } from "../../lib/session";
+import api from "../../_lib/api";
+import { getUserId } from "../../_lib/session";
 
 interface Interesse {
   id: number;
@@ -33,9 +34,13 @@ export default function InteressesRecebidosPage() {
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<number | null>(null);
 
+  const isFocused = useIsFocused()
+
   useEffect(() => {
+    let mounted = true
     getUserId()
       .then((id) => {
+        if (!mounted) return
         setUserId(id);
         if (id) {
           return api.listSellerInterests(id);
@@ -43,6 +48,7 @@ export default function InteressesRecebidosPage() {
         return null;
       })
       .then((data) => {
+        if (!mounted || !data) return
         if (data && Array.isArray(data)) {
           setInteresses(data);
         }
@@ -51,8 +57,10 @@ export default function InteressesRecebidosPage() {
         console.error(error);
         Alert.alert('Erro', 'Não foi possível carregar os interesses recebidos.');
       })
-      .finally(() => setLoading(false));
-  }, []);
+      .finally(() => { if (mounted) setLoading(false) })
+
+    return () => { mounted = false }
+  }, [isFocused]);
 
   const handleViewProduct = (produtoId?: number) => {
     if (!produtoId) return;

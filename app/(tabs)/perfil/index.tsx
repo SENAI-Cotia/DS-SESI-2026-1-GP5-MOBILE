@@ -10,13 +10,11 @@ import {
     View
 } from 'react-native';
 import { clearUserSession, getUserSession } from '../../_lib/session';
-import { useTheme } from '../../_lib/theme';
 
 const { width } = Dimensions.get('window');
 
 export default function PerfilPage() {
     const router = useRouter()
-    const { darkMode } = useTheme();
     const [user, setUser] = useState<{ name: string; curso?: string } | null>(null)
 
     const handleLogout = async () => {
@@ -33,12 +31,9 @@ export default function PerfilPage() {
     const firstName = user?.name?.split(' ')[0] ?? 'Usuário'
 
     return (
-        <View style={[style.fundo, darkMode && style.fundoDark]}>
+        <View style={style.fundo}>
             <View style={style.bolaTopo} />
             <View style={style.bolaBaixo} />
-
-
-
 
             <ScrollView contentContainerStyle={style.scrollContainer}>
 
@@ -49,7 +44,7 @@ export default function PerfilPage() {
                         minWidth: 0,
                     }}>
                         <Text style={style.titulo}>Olá {firstName}</Text>
-                        {user?.curso ? <Text style={[style.cursoText, darkMode && style.textDark]}>{user.curso}</Text> : null}
+                        {user?.curso ? <Text style={style.cursoText}>{user.curso}</Text> : null}
                     </View>
 
                     <View style={style.fotoContainer}>
@@ -165,15 +160,12 @@ export default function PerfilPage() {
                         <Text style={style.textoBotao}>Sair</Text>
                     </TouchableOpacity>
 
-
-
                 </View>
 
             </ScrollView >
 
         </View >
     )
-
 }
 
 const style = StyleSheet.create({
@@ -221,122 +213,64 @@ const style = StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 10,
         elevation: 5,
-    },
-
-    titulo: {
-        fontSize: 40,
-        fontWeight: "bold",
-        textAlign: "left",
-        flexShrink: 1,
-        paddingTop: 20,
-    },
-
-    cursoText: {
-        fontSize: 16,
-        color: "#666",
-        marginTop: 4,
-    },
-
-    subtitulo: {
-        fontSize: 13,
-        color: "#666",
-        textAlign: "center",
+        padding: 20,
         marginBottom: 20,
-    },
-    inputArea: {
-        flexDirection: "row",
-        borderBottomWidth: 1,
-        borderBottomColor: "#000",
-        marginBottom: 15,
-        alignItems: "center",
-    },
-    input: {
-        flex: 1,
-        height: 40,
-        fontSize: 14,
-    },
-    dicasSenha: {
-        marginBottom: 15,
-    },
-    dicaTitulo: {
-        fontSize: 10,
-        fontWeight: "bold",
-    },
-    dicaItem: {
-        fontSize: 10,
-        color: "#333",
-    },
-
-    botao: {
-        backgroundColor: "#e01a5f",
-        paddingVertical: 12,
-        borderRadius: 25,
-        alignItems: "flex-start",
-        marginTop: 10,
-        flexDirection: "row",
-
-        width: "90%",
-    },
-
-    textoBotao: {
-        color: "#ffffff",
-        fontSize: 16,
-        fontWeight: "bold",
-        marginLeft: 10,
-    },
-    loginContainer: {
-        flexDirection: "row",
-        justifyContent: "center",
-        marginTop: 15,
-        gap: 4,
-    },
-    textoLogin: {
-        color: "#e01a5f",
-        fontWeight: "bold",
-
-    },
-    logo: {
-        width: 160,
-        height: 50,
     },
 
     headerPerfil: {
-        width: "85%",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "space-between",
-        marginBottom: 30,
+        width: width - 40,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: 20,
+    },
+
+    titulo: {
+        fontSize: 24,
+        fontWeight: 'bold',
+    },
+
+    cursoText: {
+        fontSize: 14,
+        color: '#666',
+        marginTop: 4,
     },
 
     fotoContainer: {
-        position: "relative",
-        overflow: "visible",
-        flexShrink: 0, // impede a foto de encolher
+        alignItems: 'center',
+        justifyContent: 'center',
     },
 
     fotoPerfil: {
-        width: 65,
-        height: 65,
-        borderRadius: 100, // deixa redonda
-        backgroundColor: "#e01a5f",
-        justifyContent: "center",
-        alignItems: "center",
+        width: 60,
+        height: 60,
+        borderRadius: 30,
+        backgroundColor: '#e01a5f',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
 
     fotoInicial: {
-        color: "#fff",
-        fontSize: 26,
-        fontWeight: "bold",
+        color: '#fff',
+        fontSize: 24,
+        fontWeight: 'bold',
     },
-    fundoDark: {
-        backgroundColor: '#121212',
-    },
-    textDark: {
-        color: '#f8f8f8',
-    },
-    
-    cog: {
-        marginLeft: 100
-    }
 
-});
+    botao: {
+        width: width - 40,
+        backgroundColor: '#e01a5f',
+        paddingVertical: 14,
+        borderRadius: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginBottom: 12,
+        flexDirection: 'row',
+    },
+
+    textoBotao: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginLeft: 10,
+    },
+})

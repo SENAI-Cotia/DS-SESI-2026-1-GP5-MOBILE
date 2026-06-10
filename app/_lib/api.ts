@@ -1,4 +1,4 @@
-const DEFAULT_BASE_URL = "http://10.92.199.14:3000" // Android emulator -> use your machine host for device
+const DEFAULT_BASE_URL = "http://10.92.199.4:3000"
 
 let baseUrl = DEFAULT_BASE_URL
 
@@ -17,8 +17,11 @@ async function request(path: string, opts: RequestInit = {}) {
   try { data = text ? JSON.parse(text) : null } catch { data = text }
 
   if (!res.ok) {
-    const err = (data && data.error) || data || res.statusText
-    throw new Error(err)
+    const err =
+      (data && (data.error || data.message || data.msg)) ||
+      (typeof data === 'string' ? data : null) ||
+      res.statusText
+    throw new Error(String(err))
   }
 
   return data
@@ -30,6 +33,10 @@ export async function register(payload: { email: string; password: string; name:
 
 export async function login(payload: { email: string; password: string }) {
   return request('/login', { method: 'POST', body: JSON.stringify(payload) })
+}
+
+export async function getCursos() {
+  return request('/cursos')
 }
 
 export async function createProduct(payload: { name: string; preco: number; condicao: number; imagem?: string[]; descricao: string; disponibilidade?: boolean; atacado?: boolean; userId: number }) {
@@ -92,4 +99,5 @@ export default {
   updateProduct,
   updateUser,
   deleteProduct,
+  getCursos,
 }

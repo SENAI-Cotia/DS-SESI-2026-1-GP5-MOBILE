@@ -6,8 +6,10 @@ import {
     TextInput,
     TouchableOpacity, View
 } from 'react-native';
-import api from './lib/api';
-import { saveUserSession } from './lib/session';
+import api from './_lib/api';
+import { COURSE_OPTIONS } from './_lib/cursos';
+import { saveUserSession } from './_lib/session';
+import { isValidCpf, isValidEmail, isValidPhone, validatePassword } from './_lib/validation';
 
 const { width } = Dimensions.get('window');
 
@@ -24,13 +26,39 @@ export default function CadastroPage() {
     const router = useRouter()
 
     const handleRegister = async () => {
-        if (!email || !senha || !nome || !rm || !curso || !telefone) {
-            Alert.alert('Erro', 'Preencha todos os campos obrigatórios')
+        const missingFields: string[] = []
+    if (!email) missingFields.push('Email')
+    if (!cpf) missingFields.push('CPF')
+    if (!rm) missingFields.push('RM')
+    if (!nome) missingFields.push('Nome')
+    if (!telefone) missingFields.push('Telefone')
+    if (!curso) missingFields.push('Curso')
+    if (!senha) missingFields.push('Senha')
+    if (!confirmarSenha) missingFields.push('Confirmar senha')
+
+    if (missingFields.length > 0) {
+            Alert.alert('Erro', `Preencha os campos: ${missingFields.join(', ')}`)
             return
         }
 
-        if (senha.length <= 8) {
-            Alert.alert('Erro', 'A senha deve ter mais de 8 caracteres')
+        if (!isValidEmail(email)) {
+            Alert.alert('Erro', 'Informe um email válido')
+            return
+        }
+
+        if (!isValidCpf(cpf)) {
+            Alert.alert('Erro', 'Informe um CPF válido com 11 dígitos')
+            return
+        }
+
+        if (!isValidPhone(telefone)) {
+            Alert.alert('Erro', 'Informe um telefone válido com pelo menos 10 dígitos')
+            return
+        }
+
+        const passwordValidation = validatePassword(senha)
+        if (!passwordValidation.valid) {
+            Alert.alert('Erro', `A senha deve conter ${passwordValidation.errors.join(', ')}`)
             return
         }
 
@@ -154,19 +182,27 @@ export default function CadastroPage() {
                         />
                     </View>
 
-                    <View style={style.inputArea}>
-                        <TextInput
-                            style={style.input}
-                            placeholder="Curso"
-                            value={curso}
-                            onChangeText={setCurso}
-                        ></TextInput>
-
-                        <MaterialCommunityIcons
-                            name="account"
-                            size={22}
-                            color="#000000"
-                        />
+                    <View style={style.inputGroup}>
+                        <Text style={style.courseLabel}>Curso</Text>
+                        <View style={style.courseList}>
+                            {COURSE_OPTIONS.map((option) => (
+                                <TouchableOpacity
+                                    key={option}
+                                    style={[
+                                        style.courseOption,
+                                        curso === option && style.courseOptionSelected,
+                                    ]}
+                                    onPress={() => setCurso(option)}
+                                >
+                                    <Text style={[
+                                        style.courseOptionText,
+                                        curso === option && style.courseOptionTextSelected,
+                                    ]}>
+                                        {option}
+                                    </Text>
+                                </TouchableOpacity>
+                            ))}
+                        </View>
                     </View>
 
                     <View style={style.inputArea}>
@@ -288,6 +324,10 @@ const style = StyleSheet.create({
         marginBottom: 15,
         alignItems: "center",
     },
+    inputGroup: {
+        width: '100%',
+        marginBottom: 10,
+    },
     input: {
         flex: 1,
         height: 40,
@@ -303,6 +343,39 @@ const style = StyleSheet.create({
     dicaItem: {
         fontSize: 10,
         color: "#333",
+    },
+    courseLabel: {
+        fontSize: 16,
+        fontWeight: '700',
+        marginBottom: 8,
+    },
+    courseList: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        gap: 10,
+        marginBottom: 15,
+    },
+    courseOption: {
+        paddingVertical: 10,
+        paddingHorizontal: 12,
+        borderRadius: 20,
+        borderWidth: 1,
+        borderColor: '#ddd',
+        backgroundColor: '#fff',
+        marginRight: 10,
+        marginBottom: 10,
+    },
+    courseOptionSelected: {
+        backgroundColor: '#f43170',
+        borderColor: '#f43170',
+    },
+    courseOptionText: {
+        color: '#333',
+        fontSize: 13,
+    },
+    courseOptionTextSelected: {
+        color: '#fff',
+        fontWeight: '700',
     },
     botao: {
         backgroundColor: "#e01a5f",

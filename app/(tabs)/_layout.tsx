@@ -1,8 +1,11 @@
 import { Feather } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import { StyleSheet, View } from 'react-native';
+import { useTheme } from '../_lib/theme';
 
 export default function AppLayout() {
+  const { darkMode } = useTheme();
+
   return (
     <Tabs screenOptions={{
       tabBarActiveTintColor: '#fff',
@@ -11,7 +14,7 @@ export default function AppLayout() {
       tabBarStyle: {
         position: "absolute",
         height: 70,
-        backgroundColor: '#e01a5f',      // Cor de fundo da barra
+        backgroundColor: darkMode ? '#222' : '#e01a5f',
         borderTopWidth: 0,
       },
       headerShown: false

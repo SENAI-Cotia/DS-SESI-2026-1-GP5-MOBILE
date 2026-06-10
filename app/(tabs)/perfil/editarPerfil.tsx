@@ -2,11 +2,15 @@ import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import api from "../../lib/api";
-import { getUserSession, saveUserSession } from "../../lib/session";
+import api from "../../_lib/api";
+import { COURSE_OPTIONS } from "../../_lib/cursos";
+import { getUserSession, saveUserSession } from "../../_lib/session";
+import { useTheme } from '../../_lib/theme';
+import { isValidEmail, isValidPhone } from "../../_lib/validation";
 
 export default function EditarPerfil() {
     const router = useRouter();
+    const { darkMode } = useTheme();
 
     const [nome, setNome] = useState("");
     const [sobrenome, setSobrenome] = useState("");
@@ -53,11 +57,29 @@ export default function EditarPerfil() {
 
         const name = [nome, sobrenome].filter(Boolean).join(' ').trim();
 
-        if (!name || !email) {
-            Alert.alert('Erro', 'Preencha nome e email corretamente.');
+        if (!name) {
+            Alert.alert('Erro', 'Informe seu nome completo.')
             return;
         }
 
+        if (!email) {
+            Alert.alert('Erro', 'Informe seu email.')
+            return;
+        }
+
+        if (!isValidEmail(email)) {
+            Alert.alert('Erro', 'Informe um email válido.')
+            return;
+        }
+
+        if (celular && !isValidPhone(celular)) {
+            Alert.alert('Erro', 'Informe um telefone válido com pelo menos 10 dígitos.')
+            return;
+        }
+        if (!curso) {
+            Alert.alert('Erro', 'Escolha o seu curso.')
+            return
+        }
         setSaving(true);
 
         try {
@@ -97,7 +119,7 @@ export default function EditarPerfil() {
     }
 
     return (
-        <View style={style.fundo}>
+        <View style={[style.fundo, darkMode && style.fundoDark]}>
             <View style={style.faixaRosaTopo} />
             <View style={style.bolaTopo} />
             <View style={style.bolaBaixo} />
@@ -108,7 +130,7 @@ export default function EditarPerfil() {
 
             <ScrollView contentContainerStyle={style.scrollContainer} showsVerticalScrollIndicator={false}>
 
-                <View style={style.card}>
+                <View style={[style.card, darkMode && style.cardDark]}>
                     <Text style={style.tituloCard}>Informações da conta</Text>
 
                     <View style={style.linhaDupla}>
@@ -145,7 +167,25 @@ export default function EditarPerfil() {
 
                     <View style={style.campoInteiro}>
                         <Text style={style.label}>Curso</Text>
-                        <TextInput style={style.input} value={curso} onChangeText={setCurso} placeholder="Curso" />
+                        <View style={style.courseList}>
+                            {COURSE_OPTIONS.map((option) => (
+                                <TouchableOpacity
+                                    key={option}
+                                    style={[
+                                        style.courseOption,
+                                        curso === option && style.courseOptionSelected,
+                                    ]}
+                                    onPress={() => setCurso(option)}
+                                >
+                                    <Text style={[
+                                        style.courseOptionText,
+                                        curso === option && style.courseOptionTextSelected,
+                                    ]}>
+                                        {option}
+                                    </Text>
+                                </TouchableOpacity>
+                            ))}
+                        </View>
                     </View>
 
                     <TouchableOpacity style={[style.saveButton, saving && style.saveButtonDisabled]} onPress={handleSave} disabled={saving}>
@@ -246,6 +286,15 @@ const style = StyleSheet.create({
         color: "#999",
         marginBottom: 5,
     },
+    cardDark: {
+        backgroundColor: '#2c2c2c',
+    },
+    fundoDark: {
+        backgroundColor: '#121212',
+    },
+    textDark: {
+        color: '#f8f8f8',
+    },
     labelComIcone: {
         flexDirection: "row",
         alignItems: "center",
@@ -285,6 +334,34 @@ const style = StyleSheet.create({
     textoAtivo: {
         color: "#fff",
         fontWeight: "bold",
+    },
+    courseList: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        gap: 10,
+        marginTop: 8,
+    },
+    courseOption: {
+        paddingVertical: 10,
+        paddingHorizontal: 12,
+        borderRadius: 20,
+        borderWidth: 1,
+        borderColor: '#ddd',
+        backgroundColor: '#fff',
+        marginRight: 10,
+        marginBottom: 10,
+    },
+    courseOptionSelected: {
+        backgroundColor: '#f43170',
+        borderColor: '#f43170',
+    },
+    courseOptionText: {
+        color: '#333',
+        fontSize: 13,
+    },
+    courseOptionTextSelected: {
+        color: '#fff',
+        fontWeight: '700',
     },
 
     loadingText: {

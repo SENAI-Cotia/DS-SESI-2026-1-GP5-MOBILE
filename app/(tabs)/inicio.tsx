@@ -1,8 +1,9 @@
 import { Ionicons } from "@expo/vector-icons"
+import { useIsFocused } from '@react-navigation/native'
 import { useRouter } from "expo-router"
 import { useEffect, useState } from "react"
 import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
-import api from "../lib/api"
+import api from "../_lib/api"
 
 interface Produto {
     id: number;
@@ -24,9 +25,14 @@ export default function PaginaInicio() {
     const [produtos, setProdutos] = useState<Produto[]>([])
     const [loading, setLoading] = useState(true)
 
+    const isFocused = useIsFocused()
+
     useEffect(() => {
+        let mounted = true
+        setLoading(true)
         api.listProducts()
             .then((data) => {
+                if (!mounted) return
                 const disponiveis = Array.isArray(data)
                     ? data.filter((produto: Produto) => produto.disponibilidade !== false)
                     : []
@@ -35,8 +41,9 @@ export default function PaginaInicio() {
             .catch((error) => {
                 console.error('Erro carregando produtos:', error)
             })
-            .finally(() => setLoading(false))
-    }, [])
+            .finally(() => { if (mounted) setLoading(false) })
+        return () => { mounted = false }
+    }, [isFocused])
 
     const produtosFiltrados = produtos.filter((produto) => {
         const texto = busca.toLowerCase()
@@ -81,12 +88,9 @@ export default function PaginaInicio() {
                 {produtosFiltrados.map((post) => (
                     <View key={post.id} style={style.card}>
                         <View style={style.perfilContainer}>
-                            <Image
-                                source={{
-                                    uri: "https://i.pravatar.cc/150"
-                                }}
-                                style={style.fotoPerfil}
-                            />
+                            <View style={style.fotoPerfil}>
+                                <Text style={style.fotoInicial}>{post.user.name.trim().charAt(0).toUpperCase()}</Text>
+                            </View>
                             <View style={{ flex: 1, marginLeft: 10 }} >
                                 <Text style={style.nomePerfil}>
                                     {post.user.name}
@@ -126,7 +130,7 @@ export default function PaginaInicio() {
     )
 }
 
-const style = StyleSheet.create({
+const style = StyleSheet.create<any>({
     fundo: {
         flex: 1,
         backgroundColor: "#f5f5f5"
@@ -195,7 +199,14 @@ const style = StyleSheet.create({
         width: 45,
         height: 45,
         borderRadius: 22.5,
-
+        backgroundColor: '#e01a5f',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    fotoInicial: {
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: '700',
     },
     nomePerfil: {
         fontSize: 16,
@@ -203,6 +214,11 @@ const style = StyleSheet.create({
         color: "#e01a5f"
     },
     cursoPerfil: {
+    fotoInicial: {
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: '700',
+    },
         fontSize: 12,
         color: "#666"
     },

@@ -2,8 +2,9 @@ import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, Dimensions, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
-import api from "../../lib/api";
-import { getUserId } from "../../lib/session";
+import api from "../../_lib/api";
+import { getUserId } from "../../_lib/session";
+import { parseCurrency } from "../../_lib/validation";
 
 const { width } = Dimensions.get("window");
 
@@ -12,6 +13,8 @@ export default function EditarVenda() {
   const router = useRouter();
   const [produtoId, setProdutoId] = useState<number | null>(null);
   const [produto, setProduto] = useState<any>(null);
+  const [disponibilidade, setDisponibilidade] = useState(true);
+  const [condicao, setCondicao] = useState(5);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [userId, setUserId] = useState<number | null>(null);
@@ -25,7 +28,11 @@ export default function EditarVenda() {
     if (!pid || isNaN(pid)) return;
     setProdutoId(pid);
     api.getProduct(pid)
-      .then((data) => setProduto(data))
+      .then((data) => {
+        setProduto(data)
+        setDisponibilidade(data?.disponibilidade ?? true)
+        setCondicao(data?.condicao ?? 5)
+      })
       .catch((err) => {
         console.error(err);
         Alert.alert('Erro', 'Não foi possível carregar o produto.');
@@ -34,10 +41,37 @@ export default function EditarVenda() {
   }, [id]);
 
   const handleSave = async () => {
-    if (!produtoId || !userId) return router.push('/');
+    if (!produtoId || !userId) {
+      Alert.alert('Erro', 'Não foi possível localizar o produto ou usuário.')
+      return router.push('/');
+    }
+
+    const nome = String(produto?.name ?? '').trim()
+    const preco = parseCurrency(String(produto?.preco ?? '0'))
+    const descricao = String(produto?.descricao ?? '').trim()
+
+    if (!nome) {
+      Alert.alert('Erro', 'Informe o nome do produto.')
+      return
+    }
+
+    if (preco <= 0) {
+      Alert.alert('Erro', 'Informe um preço válido maior que zero.')
+      return
+    }
+
+    if (!descricao) {
+      Alert.alert('Erro', 'Informe a descrição do produto.')
+      return
+    }
+
     setSaving(true);
     try {
-      await api.updateProduct(produtoId, produto);
+      await api.updateProduct(produtoId, {
+        ...produto,
+        disponibilidade,
+        condicao,
+      });
       Alert.alert('Sucesso', 'Produto atualizado.');
       router.push('/(tabs)/perfil/itensAVenda');
     } catch (err: any) {
@@ -75,6 +109,28 @@ export default function EditarVenda() {
         <Text style={style.label}>Descrição</Text>
         <TextInput style={[style.input, { height: 80 }]} value={produto.descricao} onChangeText={(text) => setProduto({ ...produto, descricao: text })} multiline />
 
+        <Text style={style.label}>Status</Text>
+        <TouchableOpacity
+          style={[
+            style.statusButton,
+            disponibilidade ? style.statusAvailable : style.statusSold,
+          ]}
+          onPress={() => setDisponibilidade((prev) => !prev)}
+        >
+          <Text style={style.statusButtonText}>{disponibilidade ? 'Disponível' : 'Vendido'}</Text>
+        </TouchableOpacity>
+
+        <Text style={style.label}>Condição</Text>
+        <View style={style.condicaoRow}>
+          <TouchableOpacity style={style.condicaoControl} onPress={() => setCondicao((prev) => Math.max(1, prev - 1))}>
+            <Text style={style.condicaoControlText}>-</Text>
+          </TouchableOpacity>
+          <Text style={style.condicaoValue}>{condicao}</Text>
+          <TouchableOpacity style={style.condicaoControl} onPress={() => setCondicao((prev) => Math.min(10, prev + 1))}>
+            <Text style={style.condicaoControlText}>+</Text>
+          </TouchableOpacity>
+        </View>
+
         <TouchableOpacity style={[style.saveButton, saving && style.disabled]} onPress={handleSave} disabled={saving}>
           <Text style={style.saveText}>{saving ? 'Salvando...' : 'Salvar'}</Text>
         </TouchableOpacity>
@@ -93,6 +149,14 @@ const style = StyleSheet.create({
   imagem: { width: '100%', height: 180, borderRadius: 12, marginBottom: 10 },
   label: { fontWeight: '700', marginTop: 8, marginBottom: 4 },
   input: { backgroundColor: '#fff', padding: 10, borderRadius: 8, borderWidth: 1, borderColor: '#eee' },
+  statusButton: { paddingVertical: 10, borderRadius: 10, alignItems: 'center', marginTop: 6 },
+  statusAvailable: { backgroundColor: '#4CAF50' },
+  statusSold: { backgroundColor: '#d43768' },
+  statusButtonText: { color: '#fff', fontWeight: '700' },
+  condicaoRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 8 },
+  condicaoControl: { width: 36, height: 36, borderRadius: 18, backgroundColor: '#e01a5f', justifyContent: 'center', alignItems: 'center' },
+  condicaoControlText: { color: '#fff', fontSize: 20, fontWeight: '700' },
+  condicaoValue: { fontSize: 18, fontWeight: '700', marginHorizontal: 12 },
   saveButton: { backgroundColor: '#e01a5f', padding: 12, borderRadius: 10, marginTop: 12, alignItems: 'center' },
   saveText: { color: '#fff', fontWeight: '700' },
   disabled: { opacity: 0.6 },

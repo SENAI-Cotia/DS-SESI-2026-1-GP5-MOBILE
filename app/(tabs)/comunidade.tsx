@@ -1,8 +1,11 @@
 import { Ionicons } from "@expo/vector-icons"
+import { useIsFocused } from '@react-navigation/native'
 import { useRouter } from "expo-router"
 import { useEffect, useState } from "react"
 import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
-import api from "../lib/api"
+import api from "../_lib/api"
+import { COURSE_OPTIONS } from "../_lib/cursos"
+import { getUserCurso } from "../_lib/session"
 
 interface Produto {
     id: number;
@@ -25,20 +28,30 @@ export default function PaginaInicio() {
     const [cursoSelecionado, setCursoSelecionado] = useState("")
 
     const cursos = [
-        "Todos",
-        "Desenvolvimento de Sistemas",
-        "Administração",
-        "RH",
-        "Marketing",
-        "Nutrição",
+        'Todos',
+        ...COURSE_OPTIONS,
     ]
 
     const [produtos, setProdutos] = useState<Produto[]>([])
     const [loading, setLoading] = useState(true)
 
+    const isFocused = useIsFocused()
+
     useEffect(() => {
+        let mounted = true
+        getUserCurso()
+            .then((savedCurso) => {
+                if (!mounted) return
+                if (savedCurso && cursos.includes(savedCurso)) {
+                    setCursoSelecionado(savedCurso)
+                }
+            })
+            .catch(() => {})
+
+        setLoading(true)
         api.listProducts()
             .then((data) => {
+                if (!mounted) return
                 const disponiveis = Array.isArray(data)
                     ? data.filter((produto: Produto) => produto.disponibilidade !== false)
                     : []
@@ -47,8 +60,10 @@ export default function PaginaInicio() {
             .catch((error) => {
                 console.error('Erro carregando produtos:', error)
             })
-            .finally(() => setLoading(false))
-    }, [])
+            .finally(() => { if (mounted) setLoading(false) })
+
+        return () => { mounted = false }
+    }, [isFocused])
 
     const postsFiltrados = produtos.filter((produto) => {
         const matchesCurso = cursoSelecionado === "" || cursoSelecionado === "Todos" || produto.user?.curso === cursoSelecionado
@@ -199,14 +214,15 @@ export default function Comunidade() {
                                 }}
                             >
 
-                <Ionicons
-                  name="chevron-forward"
-                  size={16}
-                  color="#e01a5f"
-                />
+                                <Text style={[style.textoFiltro, cursoSelecionado === curso && style.textoFiltroSelected]}>
+                                    {curso}
+                                </Text>
 
-              </TouchableOpacity>
-            ))}
+                                <Ionicons
+                                    name="chevron-forward"
+                                    size={16}
+                                    color={cursoSelecionado === curso ? '#fff' : '#f43170'}
+                                />
 
           </View>
         )}
@@ -230,10 +246,9 @@ export default function Comunidade() {
                 {postsFiltrados.map((produto) => (
                     <View key={produto.id} style={style.card}>
                         <View style={style.perfilContainer}>
-                            <Image
-                                source={{ uri: `https://i.pravatar.cc/150?u=${encodeURIComponent(produto.user?.name ?? 'usuário')}` }}
-                                style={style.fotoPerfil}
-                            />
+                            <View style={style.fotoPerfil}>
+                                <Text style={style.fotoInicial}>{produto.user?.name?.trim()?.charAt(0).toUpperCase() ?? 'U'}</Text>
+                            </View>
                             <View style={{ flex: 1, marginLeft: 10 }} >
                                 <Text style={style.nomePerfil}>{produto.user?.name ?? 'Vendedor'}</Text>
                                 <Text style={style.cursoPerfil}>{produto.user?.curso ?? ''}</Text>
@@ -330,7 +345,14 @@ const style = StyleSheet.create({
         width: 45,
         height: 45,
         borderRadius: 22.5,
-
+        backgroundColor: '#e01a5f',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    fotoInicial: {
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: '700',
     },
     nomePerfil: {
         fontSize: 16,
@@ -431,17 +453,26 @@ const style = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        backgroundColor: "#f2f2f2",
-        borderRadius: 20,
-        paddingVertical: 8,
-        paddingHorizontal: 10,
-        marginBottom: 8,
+        backgroundColor: "transparent",
+        borderRadius: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 8,
+        marginBottom: 6,
     },
 
     itemSelecionado: {
-        backgroundColor: "#FFC0D6",
+        backgroundColor: "#f43170",
+        borderRadius: 10,
     },
 
-const style = StyleSheet.create({
+    textoFiltro: {
+        fontSize: 13,
+        fontWeight: "600",
+        color: '#444'
+    },
+    textoFiltroSelected: {
+        color: '#fff',
+        fontWeight: '700'
+    },
 
 })

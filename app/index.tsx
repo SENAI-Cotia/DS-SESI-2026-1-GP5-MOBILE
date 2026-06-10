@@ -2,8 +2,9 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import { Alert, Dimensions, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import api from './lib/api';
-import { saveUserSession } from './lib/session';
+import api from './_lib/api';
+import { saveUserSession } from './_lib/session';
+import { isValidEmail } from './_lib/validation';
 
 const { width } = Dimensions.get('window');
 
@@ -22,23 +23,37 @@ export default function Index() {
       return
     }
 
+    if (!isValidEmail(email)) {
+      Alert.alert('Erro', 'Informe um email válido')
+      return
+    }
+
+    if (senha.length < 8) {
+      Alert.alert('Erro', 'A senha deve ter pelo menos 8 caracteres')
+      return
+    }
+
     try {
       const result = await api.login({ email, password: senha })
       const user = result?.user ?? result
-      if (user?.id) {
-        await saveUserSession({
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          rm: user.rm,
-          curso: user.curso,
-          telNumero: user.telNumero,
-          funcao: user.funcao,
-        })
+      if (!user?.id) {
+        const message = result?.error || result?.message || result?.msg || 'Email ou senha incorretos'
+        Alert.alert('Erro', String(message))
+        return
       }
+      await saveUserSession({
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        rm: user.rm,
+        curso: user.curso,
+        telNumero: user.telNumero,
+        funcao: user.funcao,
+      })
       router.push('/(tabs)/inicio')
     } catch (err: any) {
-      Alert.alert('Erro', err?.message || 'Falha ao efetuar login')
+      const message = typeof err === 'string' ? err : err?.message || 'Falha ao efetuar login'
+      Alert.alert('Erro', message)
     }
   }
 

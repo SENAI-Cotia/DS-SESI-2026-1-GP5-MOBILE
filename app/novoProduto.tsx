@@ -14,8 +14,9 @@ import * as ImagePicker from 'expo-image-picker';
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import api from "./lib/api";
-import { getUserId } from "./lib/session";
+import api from "./_lib/api";
+import { getUserId, getUserSession } from "./_lib/session";
+import { parseCurrency } from "./_lib/validation";
 
 const { width } = Dimensions.get("window")
 
@@ -25,9 +26,19 @@ export default function ultimascompras() {
     const [imagem, setImagem] = useState<string | null>(null)
     const [descricao, setDescricao] = useState("Descrição do produto...")
     const [userId, setUserId] = useState<number | null>(null)
+    const [userName, setUserName] = useState('Usuário')
+    const [userCurso, setUserCurso] = useState('')
 
     useEffect(() => {
         getUserId().then((id) => setUserId(id)).catch(console.error)
+        getUserSession()
+            .then((user) => {
+                if (user) {
+                    setUserName(user.name ?? 'Usuário')
+                    setUserCurso(user.curso ?? '')
+                }
+            })
+            .catch(console.error)
     }, [])
 
     const [nomeProduto, setNomeProduto] = useState("NOME")
@@ -94,12 +105,34 @@ export default function ultimascompras() {
     }
 
     const handlePublish = async () => {
-        if (!nomeProduto || !precoProduto) {
-            Alert.alert('Erro', 'Preencha nome e preço do produto')
+        const nomeTrimmed = String(nomeProduto).trim()
+        const descricaoTrimmed = String(descricao).trim()
+        const precoParsed = parseCurrency(String(precoProduto))
+
+        if (!nomeTrimmed || nomeTrimmed.toLowerCase() === 'nome') {
+            Alert.alert('Erro', 'Preencha o nome do produto')
             return
         }
 
-        const precoParsed = parseFloat(String(precoProduto).replace(/[^0-9.,]/g, '').replace(',', '.')) || 0
+        if (precoParsed <= 0) {
+            Alert.alert('Erro', 'Informe um preço válido maior que zero')
+            return
+        }
+
+        if (!descricaoTrimmed || descricaoTrimmed.toLowerCase().includes('descrição do produto')) {
+            Alert.alert('Erro', 'Preencha a descrição do produto')
+            return
+        }
+
+        if (!imagem) {
+            Alert.alert('Erro', 'Selecione uma imagem para o produto')
+            return
+        }
+
+        if (!locais.length || !horarios.length) {
+            Alert.alert('Erro', 'Adicione ao menos um local e um horário')
+            return
+        }
 
         if (!userId) {
             Alert.alert('Erro', 'Faça login antes de publicar um produto.')
@@ -154,21 +187,17 @@ export default function ultimascompras() {
                 <View style={style.card}>
 
                     <View style={style.perfilContainer}>
-
-                        <Image
-                            style={style.fotoPerfil}
-                            source={{ uri: "https://i.pravatar.cc/150" }}
-                        />
+                        <View style={style.fotoPerfil}>
+                            <Text style={style.fotoInicial}>{userName.trim().charAt(0).toUpperCase() || 'U'}</Text>
+                        </View>
 
                         <View style={style.textoContainer}>
-
                             <View style={style.linhaNome}>
-                                <Text style={style.nomePerfil}>Leticia Soares</Text>
+                                <Text style={style.nomePerfil}>{userName}</Text>
                                 <Text style={style.tempo}>há 8 horas</Text>
                             </View>
 
-                            <Text style={style.cursoPerfil}>RH</Text>
-
+                            <Text style={style.cursoPerfil}>{userCurso || 'Curso não informado'}</Text>
                         </View>
                     </View>
 
@@ -629,6 +658,14 @@ const style = StyleSheet.create({
         width: 45,
         height: 45,
         borderRadius: 100,
+        backgroundColor: '#e01a5f',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    fotoInicial: {
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: '700',
     },
 
     perfilContainer: {

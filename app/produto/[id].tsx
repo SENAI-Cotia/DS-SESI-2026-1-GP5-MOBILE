@@ -1,9 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
+import { useIsFocused } from '@react-navigation/native';
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import api from "../lib/api";
-import { getUserId } from "../lib/session";
+import api from "../_lib/api";
+import { getUserId } from "../_lib/session";
 
 interface Produto {
   id: number;
@@ -38,19 +39,25 @@ export default function ProdutoPage() {
     getUserId().then(setUserId).catch(console.error);
   }, []);
 
+  const isFocused = useIsFocused()
+
   useEffect(() => {
     if (!id) return;
     const productId = Number(id);
     if (isNaN(productId)) return;
+    let mounted = true
 
+    setLoading(true)
     api.getProduct(productId)
-      .then((data) => setProduto(data))
+      .then((data) => { if (mounted) setProduto(data) })
       .catch((error) => {
         console.error(error);
         Alert.alert('Erro', 'Não foi possível carregar o produto.');
       })
-      .finally(() => setLoading(false));
-  }, [id]);
+      .finally(() => { if (mounted) setLoading(false) })
+
+    return () => { mounted = false }
+  }, [id, isFocused]);
 
   const imagens = produto?.imagem || [];
   const mainImage = imagens.length > 0 ? imagens[selectedImageIndex] : undefined;

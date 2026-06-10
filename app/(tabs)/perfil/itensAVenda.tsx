@@ -1,10 +1,11 @@
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { useIsFocused } from '@react-navigation/native';
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import api from "../../lib/api";
-import { getUserId } from "../../lib/session";
+import api from "../../_lib/api";
+import { getUserId } from "../../_lib/session";
 
 const { width } = Dimensions.get("window")
 
@@ -27,6 +28,8 @@ export default function itensaVenda() {
     const [loading, setLoading] = useState(true)
     const [userId, setUserId] = useState<number | null>(null)
     
+    const isFocused = useIsFocused()
+
     useEffect(() => {
         let mounted = true
         getUserId()
@@ -51,7 +54,7 @@ export default function itensaVenda() {
         return () => {
             mounted = false
         }
-    }, [])
+    }, [isFocused])
 
     return (
         <SafeAreaView style={style.fundo}>

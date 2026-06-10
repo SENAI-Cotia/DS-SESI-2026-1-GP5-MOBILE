@@ -1,10 +1,11 @@
 import { Ionicons } from "@expo/vector-icons";
+import { useIsFocused } from '@react-navigation/native';
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Alert, Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import api from "../../lib/api";
-import { getUserId } from "../../lib/session";
+import api from "../../_lib/api";
+import { getUserId } from "../../_lib/session";
 
 const ultimasCompras = [
     {
@@ -91,6 +92,8 @@ export default function ultimascompras() {
         }
     }
 
+    const isFocused = useIsFocused()
+
     useEffect(() => {
         let mounted = true
 
@@ -118,7 +121,7 @@ export default function ultimascompras() {
         return () => {
             mounted = false
         }
-    }, [])
+    }, [isFocused])
 
     return (
         <SafeAreaView style={style.fundo}>
