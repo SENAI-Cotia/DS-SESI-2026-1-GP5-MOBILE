@@ -1,21 +1,25 @@
-import { useRouter } from "expo-router"
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native"
+import { useRouter } from "expo-router";
+import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import Text from './_lib/Text';
+import { theme, useTheme } from './_lib/theme';
 
 export default function Concluido() {
     const router = useRouter()
+    const { darkMode } = useTheme()
+    const colors = darkMode ? theme.dark : theme.light
 
     return (
 
-        <View style={style.fundo}>
+        <View style={[style.fundo, darkMode && style.fundoDark]}>
             <View style={style.bolaTopo} />
             <View style={style.bolaBaixo} />
 
             <Image source={require("../assets/images/logo.png")} style={style.logo}></Image>
 
 
-            <View style={style.card}>
-                <Text style={style.titulo}>Cadastro concluído!</Text>
-                <Text style={style.subtitulo}>
+            <View style={[style.card, darkMode && style.cardDark]}>
+                <Text style={[style.titulo, darkMode && style.tituloDark]}>Cadastro concluído!</Text>
+                <Text style={[style.subtitulo, darkMode && style.subtituloDark]}>
                     Parabéns! seu cadastro foi concluído com sucesso!
                 </Text>
 
@@ -77,6 +81,19 @@ const style = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 10,
         elevation: 5,
+    },
+    cardDark: {
+        backgroundColor: '#1e1e1e',
+        borderColor: '#333',
+    },
+    fundoDark: {
+        backgroundColor: '#121212',
+    },
+    tituloDark: {
+        color: '#f8f8f8',
+    },
+    subtituloDark: {
+        color: '#c1c1c7',
     },
     titulo: {
         fontSize: 22,

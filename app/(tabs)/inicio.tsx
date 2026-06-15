@@ -2,9 +2,11 @@ import { Ionicons } from "@expo/vector-icons"
 import { useIsFocused } from '@react-navigation/native'
 import { useRouter } from "expo-router"
 import { useEffect, useState } from "react"
-import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
-import { useTheme } from '../_lib/theme';
+import { Image, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from "react-native"
+import Text from '../_lib/Text'
 import api from "../_lib/api"
+import { getUserId } from '../_lib/session'
+import { useTheme } from '../_lib/theme'
 
 interface Produto {
     id: number;
@@ -25,6 +27,7 @@ export default function PaginaInicio() {
     const [busca, setBusca] = useState("")
     const [produtos, setProdutos] = useState<Produto[]>([])
     const [loading, setLoading] = useState(true)
+    const [hasInteresse, setHasInteresse] = useState(false)
 
     const isFocused = useIsFocused()
 
@@ -43,6 +46,21 @@ export default function PaginaInicio() {
                 console.error('Erro carregando produtos:', error)
             })
             .finally(() => { if (mounted) setLoading(false) })
+
+        getUserId()
+            .then((id) => {
+                if (!mounted || !id) return
+                return api.listSellerInterests(id)
+            })
+            .then((interesses) => {
+                if (!mounted || !interesses) return
+                setHasInteresse(Array.isArray(interesses) && interesses.length > 0)
+            })
+            .catch(() => {
+                if (!mounted) return
+                setHasInteresse(false)
+            })
+
         return () => { mounted = false }
     }, [isFocused])
 
@@ -71,7 +89,10 @@ export default function PaginaInicio() {
                     ><Ionicons name="add" size={30} color="#e01a5f" /></TouchableOpacity>
                     <Image source={darkMode ? require("../../assets/images/logo-etrooc-darkmode.svg") : require("../../assets/images/logo.png")} style={style.logo}></Image>
 
-                    <TouchableOpacity><Ionicons name="notifications-outline" size={26} color="#e01a5f" /></TouchableOpacity>
+                    <TouchableOpacity onPress={() => router.push('/perfil_tab/interessesRecebidos')} style={style.notificationWrapper}>
+                        <Ionicons name="notifications-outline" size={26} color="#e01a5f" />
+                        {hasInteresse && <View style={style.notificationDot} />}
+                    </TouchableOpacity>
                 </View>
 
 
@@ -266,6 +287,21 @@ const style = StyleSheet.create<any>({
         justifyContent: "center",
         alignItems: "center",
         elevation: 3
+    },
+    notificationWrapper: {
+        position: 'relative',
+        padding: 4,
+    },
+    notificationDot: {
+        position: 'absolute',
+        top: 2,
+        right: 2,
+        width: 10,
+        height: 10,
+        borderRadius: 5,
+        backgroundColor: '#ff3b30',
+        borderWidth: 1,
+        borderColor: '#fff',
     },
     botaoVerMais: {
         backgroundColor: "#e01a5f",

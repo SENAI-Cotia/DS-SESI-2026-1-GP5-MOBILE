@@ -1,50 +1,19 @@
 import { Ionicons } from "@expo/vector-icons";
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useTheme } from '../../_lib/theme';
-
-const FONT_SIZE_KEY = 'appFontSize';
-
-// 1. Mapeamento de multiplicadores de escala para os tamanhos
-const fontScale = {
-  small: 0.85,
-  medium: 1.0,
-  large: 1.25,
-};
+import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import Text from '../../_lib/Text';
 
 export default function AcessibilidadePage() {
   const router = useRouter();
-  const { darkMode, toggleDarkMode } = useTheme(); // Dica: futuramente, traga o 'fontSize' daqui de dentro!
-  const [fontSize, setFontSize] = useState<'small'|'medium'|'large'>('medium');
-
-  useEffect(() => {
-    const loadFontPreferences = async () => {
-      const value = await AsyncStorage.getItem(FONT_SIZE_KEY);
-      if (value === 'small' || value === 'medium' || value === 'large') {
-        setFontSize(value);
-      }
-    };
-    loadFontPreferences();
-  }, []);
-
-  const savePreference = async (key: string, value: string) => {
-    await AsyncStorage.setItem(key, value);
-  };
+  const { darkMode, toggleDarkMode, fontSize, setFontSize, getScaledFont } = useTheme();
 
   const handleFontSize = async (size: 'small'|'medium'|'large') => {
-    setFontSize(size);
-    await savePreference(FONT_SIZE_KEY, size);
+    await setFontSize(size);
   };
 
   const handleToggleDark = async () => {
     await toggleDarkMode();
-  };
-
-  // 2. Função auxiliar para calcular o tamanho real dinamicamente
-  const getScaledFont = (baseSize: number) => {
-    return baseSize * fontScale[fontSize];
   };
 
   return (

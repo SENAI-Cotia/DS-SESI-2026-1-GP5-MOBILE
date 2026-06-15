@@ -1,4 +1,4 @@
-const DEFAULT_BASE_URL = "http://10.92.199.4:3000"
+const DEFAULT_BASE_URL = "http://10.92.199.17:3000"
 
 let baseUrl = DEFAULT_BASE_URL
 

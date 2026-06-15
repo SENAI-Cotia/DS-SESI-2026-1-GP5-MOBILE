@@ -2,9 +2,11 @@ import { Ionicons } from "@expo/vector-icons";
 import { useIsFocused } from '@react-navigation/native';
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { Alert, Dimensions, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Dimensions, Image, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import Text from '../_lib/Text';
 import api from "../_lib/api";
 import { getUserId } from "../_lib/session";
+import { useTheme } from '../_lib/theme';
 
 interface Produto {
   id: number;
@@ -27,6 +29,7 @@ const { width } = Dimensions.get("window");
 export default function ProdutoPage() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
+  const { darkMode } = useTheme();
   const [produto, setProduto] = useState<Produto | null>(null);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [selectedLocal, setSelectedLocal] = useState<string | null>(null);
@@ -92,30 +95,30 @@ export default function ProdutoPage() {
 
   if (loading) {
     return (
-      <View style={style.fundo}>
-        <Text style={style.loadingText}>Carregando produto...</Text>
+      <View style={[style.fundo, darkMode && style.fundoDark]}>
+        <Text style={[style.loadingText, darkMode && style.loadingTextDark]}>Carregando produto...</Text>
       </View>
     );
   }
 
   if (!produto) {
     return (
-      <View style={style.fundo}>
-        <Text style={style.loadingText}>Produto não encontrado.</Text>
+      <View style={[style.fundo, darkMode && style.fundoDark]}>
+        <Text style={[style.loadingText, darkMode && style.loadingTextDark]}>Produto não encontrado.</Text>
       </View>
     );
   }
 
   return (
-    <View style={style.fundo}>
+    <View style={[style.fundo, darkMode && style.fundoDark]}>
       <TouchableOpacity style={style.botaoVoltar} onPress={() => router.back()}>
         <Ionicons name="chevron-back" size={30} color="#fff" />
       </TouchableOpacity>
 
       <ScrollView contentContainerStyle={style.scrollContainer} showsVerticalScrollIndicator={false}>
-        <View style={style.card}>
+        <View style={[style.card, darkMode && style.cardDark]}>
           <View style={style.header}>
-            <Text style={style.title}>Produto</Text>
+            <Text style={[style.title, darkMode && style.titleDark]}>Produto</Text>
             <Text style={style.price}>R$ {Number(produto.preco || 0).toFixed(2).replace('.', ',')}</Text>
           </View>
 
@@ -123,7 +126,7 @@ export default function ProdutoPage() {
             {mainImage ? (
               <Image source={{ uri: mainImage }} style={style.mainImage} resizeMode="cover" />
             ) : (
-              <View style={style.imagePlaceholder}><Text style={style.placeholderText}>Sem imagem</Text></View>
+              <View style={[style.imagePlaceholder, darkMode && style.imagePlaceholderDark]}><Text style={[style.placeholderText, darkMode && style.placeholderTextDark]}>Sem imagem</Text></View>
             )}
           </View>
 
@@ -138,38 +141,38 @@ export default function ProdutoPage() {
           )}
 
           <View style={style.section}>
-            <Text style={style.sectionTitle}>{produto.name}</Text>
-            <Text style={style.description}>{produto.descricao}</Text>
-            <Text style={style.meta}>Condição: {produto.condicao ?? 'N/A'}/10</Text>
-            <Text style={style.meta}>Vendedor: {produto.user?.name ?? 'Vendedor'}</Text>
-            <Text style={style.meta}>Curso: {produto.user?.curso ?? '-'}</Text>
+            <Text style={[style.sectionTitle, darkMode && style.sectionTitleDark]}>{produto.name}</Text>
+            <Text style={[style.description, darkMode && style.descriptionDark]}>{produto.descricao}</Text>
+            <Text style={[style.meta, darkMode && style.metaDark]}>Condição: {produto.condicao ?? 'N/A'}/10</Text>
+            <Text style={[style.meta, darkMode && style.metaDark]}>Vendedor: {produto.user?.name ?? 'Vendedor'}</Text>
+            <Text style={[style.meta, darkMode && style.metaDark]}>Curso: {produto.user?.curso ?? '-'}</Text>
           </View>
 
           <View style={style.tagsRow}>
             <View style={style.tagGroup}>
-              <Text style={style.sectionLabel}>Local</Text>
+              <Text style={[style.sectionLabel, darkMode && style.sectionLabelDark]}>Local</Text>
               <View style={style.tagsContainer}>
                 {(produto.local ?? ['Campus', 'Biblioteca', 'Sala de aula']).map((local) => (
                   <TouchableOpacity
                     key={local}
-                    style={[style.tag, selectedLocal === local && style.tagSelected]}
+                    style={[style.tag, darkMode && style.tagDark, selectedLocal === local && style.tagSelected]}
                     onPress={() => setSelectedLocal(local)}
                   >
-                    <Text style={[style.tagText, selectedLocal === local && style.tagTextSelected]}>{local}</Text>
+                    <Text style={[style.tagText, darkMode && style.tagTextDark, selectedLocal === local && style.tagTextSelected]}>{local}</Text>
                   </TouchableOpacity>
                 ))}
               </View>
             </View>
             <View style={style.tagGroup}>
-              <Text style={style.sectionLabel}>Horário</Text>
+              <Text style={[style.sectionLabel, darkMode && style.sectionLabelDark]}>Horário</Text>
               <View style={style.tagsContainer}>
                 {(produto.horario ?? ['Manhã', 'Tarde', 'Noite']).map((horario) => (
                   <TouchableOpacity
                     key={horario}
-                    style={[style.tag, selectedHorario === horario && style.tagSelected]}
+                    style={[style.tag, darkMode && style.tagDark, selectedHorario === horario && style.tagSelected]}
                     onPress={() => setSelectedHorario(horario)}
                   >
-                    <Text style={[style.tagText, selectedHorario === horario && style.tagTextSelected]}>{horario}</Text>
+                    <Text style={[style.tagText, darkMode && style.tagTextDark, selectedHorario === horario && style.tagTextSelected]}>{horario}</Text>
                   </TouchableOpacity>
                 ))}
               </View>
@@ -177,7 +180,7 @@ export default function ProdutoPage() {
           </View>
 
           <TouchableOpacity
-            style={[style.button, (!canSubmit || submitting) && style.buttonDisabled]}
+            style={[style.button, darkMode && style.buttonDark, (!canSubmit || submitting) && style.buttonDisabled]}
             onPress={handleInterest}
             disabled={!canSubmit || submitting}
           >
@@ -218,6 +221,18 @@ const style = StyleSheet.create({
   tagText: { color: '#333', fontSize: 12 },
   tagTextSelected: { color: '#fff' },
   button: { backgroundColor: '#e01a5f', borderRadius: 25, paddingVertical: 14, alignItems: 'center' },
+  buttonDark: { backgroundColor: '#ff6f95' },
   buttonDisabled: { opacity: 0.6 },
   buttonText: { color: '#fff', fontWeight: '700', fontSize: 15 },
+  fundoDark: { backgroundColor: '#121212' },
+  cardDark: { backgroundColor: '#1f1f1f' },
+  titleDark: { color: '#f5f5f5' },
+  imagePlaceholderDark: { backgroundColor: '#2b2b2f' },
+  placeholderTextDark: { color: '#c1c1c7' },
+  sectionTitleDark: { color: '#f5f5f5' },
+  descriptionDark: { color: '#c1c1c7' },
+  metaDark: { color: '#aaaaaa' },
+  sectionLabelDark: { color: '#f5f5f5' },
+  tagDark: { backgroundColor: '#2b2b2f', borderColor: '#444' },
+  tagTextDark: { color: '#f5f5f5' },
 });

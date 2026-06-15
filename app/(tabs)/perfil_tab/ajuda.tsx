@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import Text from '../../_lib/Text';
 import { useTheme } from '../../_lib/theme';
 
 const faqs = [
@@ -33,13 +34,13 @@ export default function AjudaPage() {
       </TouchableOpacity>
 
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.title}>Central de Ajuda</Text>
-        <Text style={styles.subtitle}>Dúvidas frequentes sobre o ETROOC</Text>
+        <Text style={[styles.title, darkMode && styles.darkTitle]}>Central de Ajuda</Text>
+        <Text style={[styles.subtitle, darkMode && styles.darkSubtitle]}>Dúvidas frequentes sobre o ETROOC</Text>
 
         {faqs.map((faq, index) => (
-          <View key={index} style={styles.card}>
-            <Text style={styles.question}>{faq.question}</Text>
-            <Text style={styles.answer}>{faq.answer}</Text>
+          <View key={index} style={[styles.card, darkMode && styles.darkCard]}>
+            <Text style={[styles.question, darkMode && styles.darkQuestion]}>{faq.question}</Text>
+            <Text style={[styles.answer, darkMode && styles.darkAnswer]}>{faq.answer}</Text>
           </View>
         ))}
       </ScrollView>
@@ -49,6 +50,11 @@ export default function AjudaPage() {
 
 const styles = StyleSheet.create({
   darkBackground: { backgroundColor: '#222' },
+  darkTitle: { color: '#fff' },
+  darkSubtitle: { color: '#ccc' },
+  darkQuestion: { color: '#fff' },
+  darkAnswer: { color: '#ccc' },
+  darkCard: { backgroundColor: '#333' },
   container: { flex: 1, backgroundColor: '#fff' },
   backButton: { backgroundColor: '#e01a5f', width: 44, height: 44, borderRadius: 22, justifyContent: 'center', alignItems: 'center', margin: 16 },
   content: { paddingHorizontal: 20, paddingBottom: 40 },

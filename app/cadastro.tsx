@@ -2,13 +2,15 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Link, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-    Alert, Dimensions, Image, ScrollView, StyleSheet, Text,
+    Alert, Dimensions, Image, ScrollView, StyleSheet,
     TextInput,
     TouchableOpacity, View
 } from 'react-native';
+import Text from './_lib/Text';
 import api from './_lib/api';
 import { COURSE_OPTIONS } from './_lib/cursos';
 import { saveUserSession } from './_lib/session';
+import { theme, useTheme } from './_lib/theme';
 import { isValidCpf, isValidEmail, isValidPhone, validatePassword } from './_lib/validation';
 
 const { width } = Dimensions.get('window');
@@ -89,9 +91,11 @@ export default function CadastroPage() {
     }
 
     const [mostrarSenha, setMostrarSenha] = useState(false)
+    const { darkMode } = useTheme();
+    const colors = darkMode ? theme.dark : theme.light
 
     return (
-        <View style={style.fundo}>
+        <View style={[style.fundo, darkMode && style.fundoDark]}>
             <View style={style.bolaTopo} />
             <View style={style.bolaBaixo} />
 
@@ -102,15 +106,16 @@ export default function CadastroPage() {
                 <Image source={require("../assets/images/logo.png")} style={style.logo}></Image>
 
 
-                <View style={style.card}>
-                    <Text style={style.titulo}>Cadastro</Text>
-                    <Text style={style.subtitulo}>Preencha os dados de login para acessar</Text>
+                <View style={[style.card, darkMode && style.cardDark]}>
+                    <Text style={[style.titulo, darkMode && style.tituloDark]}>Cadastro</Text>
+                    <Text style={[style.subtitulo, darkMode && style.subtituloDark]}>Preencha os dados de login para acessar</Text>
 
 
-                    <View style={style.inputArea}>
+                    <View style={[style.inputArea, darkMode && style.inputAreaDark]}>
                         <TextInput
-                            style={style.input}
+                            style={[style.input, darkMode && style.inputDark]}
                             placeholder="Email"
+                            placeholderTextColor={colors.placeholder}
                             value={email}
                             onChangeText={setEmail}
                         ></TextInput>
@@ -118,14 +123,15 @@ export default function CadastroPage() {
                         <MaterialCommunityIcons
                             name="account"
                             size={22}
-                            color="#000000"
+                            color={darkMode ? colors.text : '#000000'}
                         />
                     </View>
 
-                    <View style={style.inputArea}>
+                    <View style={[style.inputArea, darkMode && style.inputAreaDark]}>
                         <TextInput
-                            style={style.input}
+                            style={[style.input, darkMode && style.inputDark]}
                             placeholder="CPF"
+                            placeholderTextColor={colors.placeholder}
                             value={cpf}
                             onChangeText={setCpf}
                         ></TextInput>
@@ -137,10 +143,11 @@ export default function CadastroPage() {
                         />
                     </View>
 
-                    <View style={style.inputArea}>
+                    <View style={[style.inputArea, darkMode && style.inputAreaDark]}>
                         <TextInput
-                            style={style.input}
+                            style={[style.input, darkMode && style.inputDark]}
                             placeholder="RM"
+                            placeholderTextColor={colors.placeholder}
                             value={rm}
                             onChangeText={setRm}
                         ></TextInput>
@@ -152,10 +159,11 @@ export default function CadastroPage() {
                         />
                     </View>
 
-                    <View style={style.inputArea}>
+                    <View style={[style.inputArea, darkMode && style.inputAreaDark]}>
                         <TextInput
-                            style={style.input}
+                            style={[style.input, darkMode && style.inputDark]}
                             placeholder="Nome Completo"
+                            placeholderTextColor={colors.placeholder}
                             value={nome}
                             onChangeText={setNome}
                         ></TextInput>
@@ -167,10 +175,11 @@ export default function CadastroPage() {
                         />
                     </View>
 
-                    <View style={style.inputArea}>
+                    <View style={[style.inputArea, darkMode && style.inputAreaDark]}>
                         <TextInput
-                            style={style.input}
+                            style={[style.input, darkMode && style.inputDark]}
                             placeholder="Telefone"
+                            placeholderTextColor={colors.placeholder}
                             value={telefone}
                             onChangeText={setTelefone}
                         ></TextInput>
@@ -191,12 +200,14 @@ export default function CadastroPage() {
                                     style={[
                                         style.courseOption,
                                         curso === option && style.courseOptionSelected,
+                                        darkMode && style.courseOptionDark,
                                     ]}
                                     onPress={() => setCurso(option)}
                                 >
                                     <Text style={[
                                         style.courseOptionText,
                                         curso === option && style.courseOptionTextSelected,
+                                        darkMode && style.courseOptionTextDark,
                                     ]}>
                                         {option}
                                     </Text>
@@ -205,10 +216,11 @@ export default function CadastroPage() {
                         </View>
                     </View>
 
-                    <View style={style.inputArea}>
+                    <View style={[style.inputArea, darkMode && style.inputAreaDark]}>
                         <TextInput
-                            style={style.input}
+                            style={[style.input, darkMode && style.inputDark]}
                             placeholder="Senha"
+                            placeholderTextColor={colors.placeholder}
                             secureTextEntry={true}
                             value={senha}
                             onChangeText={setSenha}
@@ -224,10 +236,11 @@ export default function CadastroPage() {
                         <Text style={style.dicaItem}>• Símbolo</Text>
                     </View>
 
-                    <View style={style.inputArea}>
+                    <View style={[style.inputArea, darkMode && style.inputAreaDark]}>
                         <TextInput
-                            style={style.input}
+                            style={[style.input, darkMode && style.inputDark]}
                             placeholder="Confirmar Senha"
+                            placeholderTextColor={colors.placeholder}
                             value={confirmarSenha}
                             onChangeText={setConfirmarSenha}
                             secureTextEntry={!mostrarSenha}
@@ -238,7 +251,7 @@ export default function CadastroPage() {
                             <MaterialCommunityIcons
                                 name={mostrarSenha ? "eye-off" : "eye"}
                                 size={24}
-                                color="#333"
+                                color={darkMode ? colors.text : '#333'}
                             />
                         </TouchableOpacity>
                     </View>
@@ -252,8 +265,8 @@ export default function CadastroPage() {
 
                     <View style={style.loginContainer}>
 
-                        <Text>Já possui o cadastro? </Text>
-                        <Link href={"/"}><Text style={style.textoLogin}>Logar</Text></Link>
+                        <Text style={darkMode && style.textDark}>Já possui o cadastro? </Text>
+                        <Link href={"/"}><Text style={[style.textoLogin, darkMode && style.textoLoginDark]}>Logar</Text></Link>
 
                     </View>
 

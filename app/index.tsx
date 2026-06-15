@@ -1,10 +1,11 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Link, useRouter } from "expo-router";
 import { useState } from "react";
-import { Alert, Dimensions, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { Alert, Dimensions, Image, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 import api from './_lib/api';
 import { saveUserSession } from './_lib/session';
 import { isValidEmail } from './_lib/validation';
+import Text from './_lib/Text';
 
 const { width } = Dimensions.get('window');
 
@@ -15,7 +16,6 @@ export default function Index() {
   const router = useRouter()
 
   const [mostrarSenha, setMostrarSenha] = useState(false)
-  // Para a função de ocultar senha
 
   const handleLogin = async () => {
     if (!email || !senha) {
@@ -81,6 +81,7 @@ export default function Index() {
             <TextInput
               style={style.input}
               placeholder="Email"
+              placeholderTextColor="#999999"
               value={email}
               onChangeText={setEmail}>
             </TextInput>
@@ -96,6 +97,7 @@ export default function Index() {
             <TextInput
               style={style.input}
               placeholder="Senha"
+              placeholderTextColor="#999999"
               value={senha}
               onChangeText={setSenha}
               secureTextEntry={!mostrarSenha}
@@ -119,7 +121,7 @@ export default function Index() {
           </TouchableOpacity>
 
           <View style={style.loginContainer}>
-            <Text>Não possui cadastro?</Text>
+            <Text style={style.text}>Não possui cadastro?</Text>
 
             <Link href={"/cadastro"}><Text style={style.textoCadastro}>Me Cadastrar</Text></Link>
 
@@ -226,6 +228,44 @@ const style = StyleSheet.create({
     flex: 1,
     height: 40,
     fontSize: 14,
+    color: '#111',
+  },
+
+  inputDark: {
+    color: '#f5f5f5',
+  },
+
+  inputAreaDark: {
+    borderBottomColor: '#444',
+  },
+
+  cardDark: {
+    backgroundColor: '#1e1e1e',
+    borderColor: '#333',
+  },
+
+  fundoDark: {
+    backgroundColor: '#121212',
+  },
+
+  tituloDark: {
+    color: '#f8f8f8',
+  },
+
+  subtituloDark: {
+    color: '#c1c1c7',
+  },
+
+  textDark: {
+    color: '#f5f5f5',
+  },
+
+  text: {
+    color: '#333',
+  },
+
+  textoCadastroDark: {
+    color: '#ff7fa9',
   },
 
   botao: {

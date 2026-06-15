@@ -35,7 +35,7 @@ export default function PerfilPage() {
     return (
         <View style={[style.fundo, darkMode && style.fundoDark]}>
             <View style={style.bolaTopo} />
-            <View style={style.bolaBaixo} />
+             
 
 
 

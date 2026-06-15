@@ -1,7 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { Alert, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import Text from '../../_lib/Text';
 import api from "../../_lib/api";
 import { COURSE_OPTIONS } from "../../_lib/cursos";
 import { getUserSession, saveUserSession } from "../../_lib/session";

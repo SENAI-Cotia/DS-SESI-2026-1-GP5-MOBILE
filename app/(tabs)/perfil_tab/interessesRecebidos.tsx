@@ -2,7 +2,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { useIsFocused } from '@react-navigation/native';
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import { Alert, Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Dimensions, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import Text from '../../_lib/Text';
 import api from "../../_lib/api";
 import { getUserId } from "../../_lib/session";
 import { useTheme } from "../../_lib/theme";
@@ -67,7 +68,7 @@ export default function InteressesRecebidosPage() {
 
   const handleViewProduct = (produtoId?: number) => {
     if (!produtoId) return;
-    router.push(`/produto/${produtoId}`);
+    router.push(`/perfil_tab/editarVenda?id=${produtoId}`);
   };
 
   return (

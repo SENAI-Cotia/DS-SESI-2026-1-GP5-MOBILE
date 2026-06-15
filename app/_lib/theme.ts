@@ -24,6 +24,49 @@ type ThemeContextValue = {
   getScaledFont(baseSize: number): number // <--- Nova função helper matemática
 }
 
+export type ThemeColors = {
+  background: string
+  surface: string
+  card: string
+  text: string
+  textSecondary: string
+  border: string
+  placeholder: string
+  accent: string
+  accentSoft: string
+  danger: string
+  muted: string
+}
+
+export const theme = {
+  light: {
+    background: '#ffffff',
+    surface: '#f5f5f5',
+    card: '#ffffff',
+    text: '#111111',
+    textSecondary: '#666666',
+    border: '#dddddd',
+    placeholder: '#999999',
+    accent: '#e01a5f',
+    accentSoft: '#fde8ef',
+    danger: '#d62876',
+    muted: '#888888',
+  } as ThemeColors,
+  dark: {
+    background: '#121212',
+    surface: '#1f1f1f',
+    card: '#1f1f1f',
+    text: '#f5f5f5',
+    textSecondary: '#c1c1c7',
+    border: '#333333',
+    placeholder: '#8a8a8f',
+    accent: '#ff6f95',
+    accentSoft: '#2b2b2f',
+    danger: '#ff5b8b',
+    muted: '#777777',
+  } as ThemeColors,
+}
+
 const ThemeContext = createContext<ThemeContextValue | undefined>(undefined)
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
