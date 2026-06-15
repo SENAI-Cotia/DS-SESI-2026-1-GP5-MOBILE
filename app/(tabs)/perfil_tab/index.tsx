@@ -10,11 +10,13 @@ import {
     View
 } from 'react-native';
 import { clearUserSession, getUserSession } from '../../_lib/session';
+import { useTheme } from '../../_lib/theme';
 
 const { width } = Dimensions.get('window');
 
 export default function PerfilPage() {
     const router = useRouter()
+    const { darkMode } = useTheme();
     const [user, setUser] = useState<{ name: string; curso?: string } | null>(null)
 
     const handleLogout = async () => {
@@ -31,9 +33,12 @@ export default function PerfilPage() {
     const firstName = user?.name?.split(' ')[0] ?? 'Usuário'
 
     return (
-        <View style={style.fundo}>
+        <View style={[style.fundo, darkMode && style.fundoDark]}>
             <View style={style.bolaTopo} />
             <View style={style.bolaBaixo} />
+
+
+
 
             <ScrollView contentContainerStyle={style.scrollContainer}>
 
@@ -43,8 +48,8 @@ export default function PerfilPage() {
                         flex: 1,
                         minWidth: 0,
                     }}>
-                        <Text style={style.titulo}>Olá {firstName}</Text>
-                        {user?.curso ? <Text style={style.cursoText}>{user.curso}</Text> : null}
+                        <Text style={[style.titulo, darkMode && style.tituloDark]}>Olá {firstName}</Text>
+                        {user?.curso ? <Text style={[style.cursoText, darkMode && style.textDark]}>{user.curso}</Text> : null}
                     </View>
 
                     <View style={style.fotoContainer}>
@@ -60,7 +65,7 @@ export default function PerfilPage() {
                     <TouchableOpacity
                         style={style.botao}
                         activeOpacity={0.7}
-                        onPress={() => router.push("/(tabs)/perfil/editarPerfil")}
+                        onPress={() => router.push("/perfil_tab/editarPerfil")}
                     >
                         <MaterialCommunityIcons
                             name="cog"
@@ -75,7 +80,7 @@ export default function PerfilPage() {
                     <TouchableOpacity
                         style={style.botao}
                         activeOpacity={0.7}
-                        onPress={() => router.push("/acessibilidade")}
+                        onPress={() => router.push("/perfil_tab/acessibilidade")}
                     >
                         <MaterialCommunityIcons
                             name="puzzle"
@@ -90,7 +95,7 @@ export default function PerfilPage() {
                     <TouchableOpacity
                         style={style.botao}
                         activeOpacity={0.7}
-                        onPress={() => router.push("/(tabs)/perfil/ultimasCompras")}
+                        onPress={() => router.push("/perfil_tab/ultimasCompras")}
                     >
 
                         <MaterialCommunityIcons
@@ -107,7 +112,7 @@ export default function PerfilPage() {
                     <TouchableOpacity
                         style={style.botao}
                         activeOpacity={0.7}
-                        onPress={() => router.push("/(tabs)/perfil/itensAVenda")}
+                        onPress={() => router.push("/perfil_tab/itensAVenda")}
                     >
                         <MaterialCommunityIcons
                             name="shopping"
@@ -121,7 +126,7 @@ export default function PerfilPage() {
                     <TouchableOpacity
                         style={style.botao}
                         activeOpacity={0.7}
-                        onPress={() => router.push("/(tabs)/perfil/interessesRecebidos")}
+                        onPress={() => router.push("/perfil_tab/interessesRecebidos")}
                     >
                         <MaterialCommunityIcons
                             name="bell"
@@ -135,7 +140,7 @@ export default function PerfilPage() {
                     <TouchableOpacity
                         style={style.botao}
                         activeOpacity={0.7}
-                        onPress={() => router.push("/ajuda")}
+                        onPress={() => router.push("/perfil_tab/ajuda")}
                     >
                         <MaterialCommunityIcons
                             name="help"
@@ -160,12 +165,15 @@ export default function PerfilPage() {
                         <Text style={style.textoBotao}>Sair</Text>
                     </TouchableOpacity>
 
+
+
                 </View>
 
             </ScrollView >
 
         </View >
     )
+
 }
 
 const style = StyleSheet.create({
@@ -213,64 +221,126 @@ const style = StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 10,
         elevation: 5,
-        padding: 20,
-        marginBottom: 20,
-    },
-
-    headerPerfil: {
-        width: width - 40,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginBottom: 20,
     },
 
     titulo: {
-        fontSize: 24,
-        fontWeight: 'bold',
+        fontSize: 40,
+        fontWeight: "bold",
+        textAlign: "left",
+        flexShrink: 1,
+        paddingTop: 20,
+    },
+
+    tituloDark: {
+        color: '#f8f8f8',
     },
 
     cursoText: {
-        fontSize: 14,
-        color: '#666',
+        fontSize: 16,
+        color: "#3d3d3d",
         marginTop: 4,
     },
 
-    fotoContainer: {
-        alignItems: 'center',
-        justifyContent: 'center',
+    subtitulo: {
+        fontSize: 13,
+        color: "#666",
+        textAlign: "center",
+        marginBottom: 20,
     },
-
-    fotoPerfil: {
-        width: 60,
-        height: 60,
-        borderRadius: 30,
-        backgroundColor: '#e01a5f',
-        alignItems: 'center',
-        justifyContent: 'center',
+    inputArea: {
+        flexDirection: "row",
+        borderBottomWidth: 1,
+        borderBottomColor: "#000",
+        marginBottom: 15,
+        alignItems: "center",
     },
-
-    fotoInicial: {
-        color: '#fff',
-        fontSize: 24,
-        fontWeight: 'bold',
+    input: {
+        flex: 1,
+        height: 40,
+        fontSize: 14,
+    },
+    dicasSenha: {
+        marginBottom: 15,
+    },
+    dicaTitulo: {
+        fontSize: 10,
+        fontWeight: "bold",
+    },
+    dicaItem: {
+        fontSize: 10,
+        color: "#333",
     },
 
     botao: {
-        width: width - 40,
-        backgroundColor: '#e01a5f',
-        paddingVertical: 14,
-        borderRadius: 20,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginBottom: 12,
-        flexDirection: 'row',
+        backgroundColor: "#e01a5f",
+        paddingVertical: 12,
+        borderRadius: 25,
+        alignItems: "flex-start",
+        marginTop: 10,
+        flexDirection: "row",
+
+        width: "90%",
     },
 
     textoBotao: {
-        color: '#fff',
+        color: "#ffffff",
         fontSize: 16,
-        fontWeight: 'bold',
+        fontWeight: "bold",
         marginLeft: 10,
     },
-})
+    loginContainer: {
+        flexDirection: "row",
+        justifyContent: "center",
+        marginTop: 15,
+        gap: 4,
+    },
+    textoLogin: {
+        color: "#e01a5f",
+        fontWeight: "bold",
+
+    },
+    logo: {
+        width: 160,
+        height: 50,
+    },
+
+    headerPerfil: {
+        width: "85%",
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        marginBottom: 30,
+    },
+
+    fotoContainer: {
+        position: "relative",
+        overflow: "visible",
+        flexShrink: 0, // impede a foto de encolher
+    },
+
+    fotoPerfil: {
+        width: 65,
+        height: 65,
+        borderRadius: 100, // deixa redonda
+        backgroundColor: "#e01a5f",
+        justifyContent: "center",
+        alignItems: "center",
+    },
+
+    fotoInicial: {
+        color: "#fff",
+        fontSize: 26,
+        fontWeight: "bold",
+    },
+    fundoDark: {
+        backgroundColor: '#121212',
+    },
+    textDark: {
+        color: '#f8f8f8',
+    },
+    
+    cog: {
+        marginLeft: 100
+    }
+
+});

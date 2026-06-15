@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useTheme } from '../../_lib/theme';
 
 const faqs = [
   {
@@ -22,11 +23,12 @@ const faqs = [
 ];
 
 export default function AjudaPage() {
+  const { darkMode } = useTheme();
   const router = useRouter();
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
+    <View style={[styles.container, darkMode && styles.darkBackground]}>
+      <TouchableOpacity style={styles.backButton} onPress={() => router.push('/perfil_tab')}>
         <Ionicons name="chevron-back" size={26} color="#fff" />
       </TouchableOpacity>
 
@@ -46,6 +48,7 @@ export default function AjudaPage() {
 }
 
 const styles = StyleSheet.create({
+  darkBackground: { backgroundColor: '#222' },
   container: { flex: 1, backgroundColor: '#fff' },
   backButton: { backgroundColor: '#e01a5f', width: 44, height: 44, borderRadius: 22, justifyContent: 'center', alignItems: 'center', margin: 16 },
   content: { paddingHorizontal: 20, paddingBottom: 40 },

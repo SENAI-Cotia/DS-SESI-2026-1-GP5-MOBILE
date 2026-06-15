@@ -101,7 +101,7 @@ export default function EditarPerfil() {
             });
 
             Alert.alert('Sucesso', 'Dados atualizados com sucesso!');
-            router.push('/(tabs)/perfil/perfil');
+            router.back();
         } catch (error: any) {
             console.error(error);
             Alert.alert('Erro', error?.message || 'Falha ao atualizar perfil.');
@@ -124,45 +124,43 @@ export default function EditarPerfil() {
             <View style={style.bolaTopo} />
             <View style={style.bolaBaixo} />
 
-            <TouchableOpacity style={style.botaoVoltar} onPress={() => router.push("/(tabs)/perfil/perfil")}>
+            <TouchableOpacity style={style.botaoVoltar} onPress={() => router.push('/perfil_tab')}>
                 <Ionicons name="chevron-back" size={30} color="#fff" />
             </TouchableOpacity>
 
             <ScrollView contentContainerStyle={style.scrollContainer} showsVerticalScrollIndicator={false}>
 
                 <View style={[style.card, darkMode && style.cardDark]}>
-                    <Text style={style.tituloCard}>Informações da conta</Text>
+                    <Text style={[style.tituloCard, darkMode && style.tituloCardDark]}>Informações da conta</Text>
 
                     <View style={style.linhaDupla}>
                         <View style={style.campoMetade}>
                             <Text style={style.label}>Nome</Text>
-                            <TextInput style={style.input} value={nome} onChangeText={setNome} />
+                            <TextInput style={[style.input, darkMode && style.inputDark]} value={nome} onChangeText={setNome} />
                         </View>
                         <View style={style.campoMetade}>
                             <Text style={style.label}>Sobrenome</Text>
-                            <TextInput style={style.input} value={sobrenome} onChangeText={setSobrenome} />
+                            <TextInput style={[style.input, darkMode && style.inputDark]} value={sobrenome} onChangeText={setSobrenome} />
                         </View>
                     </View>
 
                     <View style={style.campoInteiro}>
-                        <View style={style.labelComIcone}>
+                        <View style={style.label}>
                             <Text style={style.label}>Celular</Text>
-                            <Ionicons name="pencil" size={14} color="#000" style={{ marginLeft: 5 }} />
                         </View>
-                        <TextInput style={style.input} value={celular} onChangeText={setCelular} />
+                        <TextInput style={[style.input, darkMode && style.inputDark]} value={celular} onChangeText={setCelular} />
                     </View>
 
                     <View style={style.campoInteiro}>
-                        <View style={style.labelComIcone}>
+                        <View style={style.label}>
                             <Text style={style.label}>Email</Text>
-                            <Ionicons name="pencil" size={14} color="#000" style={{ marginLeft: 5 }} />
                         </View>
-                        <TextInput style={style.input} value={email} onChangeText={setEmail} />
+                        <TextInput style={[style.input, darkMode && style.inputDark]} value={email} onChangeText={setEmail} />
                     </View>
 
                     <View style={style.campoInteiro}>
                         <Text style={style.label}>RM</Text>
-                        <TextInput style={style.input} value={rm} onChangeText={setRM} placeholder="RM" />
+                        <TextInput style={[style.input, darkMode && style.inputDark]} value={rm} onChangeText={setRM} placeholder="RM" />
                     </View>
 
                     <View style={style.campoInteiro}>
@@ -174,12 +172,14 @@ export default function EditarPerfil() {
                                     style={[
                                         style.courseOption,
                                         curso === option && style.courseOptionSelected,
+                                        darkMode && { backgroundColor: curso === option ? '#f43170' : '#333', borderColor: curso === option ? '#f43170' : '#333' },
                                     ]}
                                     onPress={() => setCurso(option)}
                                 >
                                     <Text style={[
                                         style.courseOptionText,
                                         curso === option && style.courseOptionTextSelected,
+                                        darkMode && { color: curso === option ? '#fff' : '#ddd' },  
                                     ]}>
                                         {option}
                                     </Text>
@@ -204,6 +204,13 @@ export default function EditarPerfil() {
 }
 
 const style = StyleSheet.create({
+    tituloCardDark: {
+        color: '#f8f8f8',
+    },
+    inputDark: {
+        borderBottomColor: '#f8f8f8',
+        color: '#f8f8f8',
+    },
     fundo: {
         flex: 1,
         backgroundColor: "#f5f5f5",

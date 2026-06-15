@@ -3,6 +3,7 @@ import { useIsFocused } from '@react-navigation/native'
 import { useRouter } from "expo-router"
 import { useEffect, useState } from "react"
 import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
+import { useTheme } from '../_lib/theme';
 import api from "../_lib/api"
 
 interface Produto {
@@ -19,7 +20,7 @@ interface Produto {
 
 
 export default function PaginaInicio() {
-
+    const { darkMode, toggleDarkMode } = useTheme();
     const router = useRouter()
     const [busca, setBusca] = useState("")
     const [produtos, setProdutos] = useState<Produto[]>([])
@@ -57,7 +58,7 @@ export default function PaginaInicio() {
 
     return (
 
-        <View style={style.fundo}>
+        <View style={[style.fundo, darkMode && style.fundoDark]}>
 
 
             <ScrollView contentContainerStyle={style.scrollContainer} showsHorizontalScrollIndicator={false}>
@@ -68,7 +69,7 @@ export default function PaginaInicio() {
                         onPress={() => router.push("/novoProduto")}
 
                     ><Ionicons name="add" size={30} color="#e01a5f" /></TouchableOpacity>
-                    <Image source={require("../../assets/images/logo.png")} style={style.logo}></Image>
+                    <Image source={darkMode ? require("../../assets/images/logo-etrooc-darkmode.svg") : require("../../assets/images/logo.png")} style={style.logo}></Image>
 
                     <TouchableOpacity><Ionicons name="notifications-outline" size={26} color="#e01a5f" /></TouchableOpacity>
                 </View>
@@ -86,24 +87,31 @@ export default function PaginaInicio() {
                 </View>
 
                 {produtosFiltrados.map((post) => (
-                    <View key={post.id} style={style.card}>
-                        <View style={style.perfilContainer}>
+                    <View key={post.id} style={[style.card, darkMode && { backgroundColor: "#333" }]}>
+                        <View style={[style.perfilContainer, darkMode && { backgroundColor: "#333" }]}>
                             <View style={style.fotoPerfil}>
-                                <Text style={style.fotoInicial}>{post.user.name.trim().charAt(0).toUpperCase()}</Text>
+                                <Text style={[style.fotoInicial, darkMode && { color: "#fff" }]}>
+                                    {post.user.name.trim().charAt(0).toUpperCase()}
+                                </Text>
                             </View>
+
                             <View style={{ flex: 1, marginLeft: 10 }} >
-                                <Text style={style.nomePerfil}>
+                                <Text style={[style.nomePerfil, darkMode && { color: "#fff" }]}>
                                     {post.user.name}
                                 </Text>
 
-                                <Text style={style.cursoPerfil}>
+                                <Text style={[style.cursoPerfil, darkMode && { color: "#ccc" }]}>
                                     {post.user.curso}
                                 </Text>
                             </View>
                         </View>
-                        {/* <Text style={style.tempoPost}>{post.tempo}</Text> */}
 
-                        <Text style={style.textoPost}>{post.descricao}</Text>
+                        <Text style={[style.tituloPost, darkMode && { color: "#fff" }]}>
+                            {post.name}
+                        </Text>
+                        <Text style={[style.textoPost, darkMode && { color: "#ccc" }]}>
+                            {post.descricao}
+                        </Text>
 
                         <View style={style.produtoContainer}>
                             <Image
@@ -115,9 +123,6 @@ export default function PaginaInicio() {
                                 style={style.imagemProduto}
                                 resizeMode="cover"
                             />
-                            <TouchableOpacity style={style.setaDireita}>
-                                <Ionicons name="chevron-forward" size={20} color="#e01a5f" />
-                            </TouchableOpacity>
                         </View>
 
                         <TouchableOpacity style={style.botaoVerMais} onPress={() => router.push(`/produto/${post.id}`)}>
@@ -135,13 +140,14 @@ const style = StyleSheet.create<any>({
         flex: 1,
         backgroundColor: "#f5f5f5"
     },
+    fundoDark: {
+        backgroundColor: "#121212",
+    },
     header: {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        paddingHorizontal: 20,
-        paddingTop: 10,
-
+        gap: 20,
     },
     iconTop: {
         fontSize: 24,
@@ -214,11 +220,11 @@ const style = StyleSheet.create<any>({
         color: "#e01a5f"
     },
     cursoPerfil: {
-    fotoInicial: {
-        color: '#fff',
-        fontSize: 18,
-        fontWeight: '700',
-    },
+        fotoInicial: {
+            color: '#fff',
+            fontSize: 18,
+            fontWeight: '700',
+        },
         fontSize: 12,
         color: "#666"
     },
@@ -274,5 +280,10 @@ const style = StyleSheet.create<any>({
         fontSize: 12,
         fontWeight: "bold"
     },
+    tituloPost: {
+        fontSize: 16,
+        fontWeight: "bold",
+        color: "#e01a5f",
+    }
 
 })

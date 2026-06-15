@@ -45,15 +45,11 @@ export default function ultimascompras() {
     const [precoProduto, setPrecoProduto] = useState("PREÇO (R$)")
 
     const [locais, setLocais] = useState([
-        "Pátio 1",
-        "Pátio 2",
-        "Biblioteca",
+        ""
     ])
 
     const [horarios, setHorarios] = useState([
-        "09:30",
-        "10:15",
-        "13:00",
+        ""
     ])
 
     const editarItem = (tipo: string, index: number) => {
@@ -96,11 +92,14 @@ export default function ultimascompras() {
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
             aspect: [4, 5],
-            quality: 1,
+            quality: 0.7, // Reduzido levemente para otimizar o tamanho do Base64 no banco
+            base64: true, // <--- Habilita o retorno da imagem em formato texto Base64
         });
 
         if (!resultado.canceled) {
-            setImagem(resultado.assets[0].uri)
+            // Monta o cabeçalho URI correto do Base64 para que a tag <Image /> consiga renderizar nativamente
+            const base64Formatado = `data:image/jpeg;base64,${resultado.assets[0].base64}`;
+            setImagem(base64Formatado);
         }
     }
 
@@ -145,7 +144,7 @@ export default function ultimascompras() {
             name: nomeProduto,
             preco: precoParsed,
             condicao: 1,
-            imagem: imagem ? [imagem] : [],
+            imagem: imagem ? [imagem] : [], // <--- Agora envia a string Base64 completa para o Banco
             descricao,
             disponibilidade: true,
             local: locais,
@@ -153,7 +152,6 @@ export default function ultimascompras() {
         }
 
         try {
-        
             await api.createProduct(payload)
             Alert.alert('Sucesso', 'Seu produto foi cadastrado com sucesso!')
             setPublicado(true)
@@ -261,10 +259,6 @@ export default function ultimascompras() {
 
                     <View style={style.editarCampo}>
 
-
-
-
-
                         <TouchableOpacity
                             onPress={() => {
 
@@ -287,15 +281,11 @@ export default function ultimascompras() {
 
                             </Text>
 
-
-
                         </TouchableOpacity>
 
                     </View>
 
                     <View style={style.editarCampo}>
-
-
 
                         <TouchableOpacity
                             onPress={() => {
@@ -318,8 +308,6 @@ export default function ultimascompras() {
                                     color="#000"
                                 />
                             </Text>
-
-
 
                         </TouchableOpacity>
 
@@ -446,7 +434,6 @@ export default function ultimascompras() {
 }
 
 const style = StyleSheet.create({
-
     container2: {
         justifyContent: "center",
         alignItems: "center",
@@ -454,13 +441,11 @@ const style = StyleSheet.create({
         gap: 15,
         marginTop: 20,
     },
-
     descricaoTexto: {
         fontSize: 10,
         color: "#3f3f3f",
         textAlign: "center",
     },
-
     descricao: {
         marginTop: 5,
         marginBottom: 15,
@@ -471,25 +456,21 @@ const style = StyleSheet.create({
         padding: 5,
         justifyContent: "center",
     },
-
     editarCampo: {
         flexDirection: "row",
         alignItems: "center",
         gap: 8,
         marginTop: 10,
     },
-
     card3Texto: {
         fontSize: 10,
     },
-
     tituloSecao: {
         fontSize: 12,
         fontWeight: "bold",
         marginBottom: 5,
         textAlign: "center",
     },
-
     card3a: {
         backgroundColor: "#ffffff",
         width: 75,
@@ -499,12 +480,9 @@ const style = StyleSheet.create({
         alignItems: "center",
         marginTop: 3,
         margin: 0.1,
-
-        // garante espaço caso o gap não funcione
         flexDirection: "row",
         gap: 19,
     },
-
     card3: {
         backgroundColor: "#ffffff",
         width: 75,
@@ -515,7 +493,6 @@ const style = StyleSheet.create({
         flexDirection: "row",
         gap: 19,
     },
-
     botao: {
         backgroundColor: "#e01a5f",
         width: 153,
@@ -525,15 +502,12 @@ const style = StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 6,
         elevation: 5,
-
-        flexDirection: "row", // coloca em linha
-        alignItems: "center", // centraliza vertical
-        justifyContent: "space-between", // separa esquerda/direita
-
-        paddingHorizontal: 15, // dá espaço interno
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        paddingHorizontal: 15,
         marginTop: 30,
     },
-
     check: {
         width: 20,
         height: 20,
@@ -545,42 +519,37 @@ const style = StyleSheet.create({
         shadowRadius: 6,
         elevation: 5,
     },
-
     entregue: {
         color: "#fff",
         fontWeight: "bold",
     },
-
     imagemSelecionada: {
         width: "100%",
         height: "100%",
         borderRadius: 20,
     },
-
     preco: {
         color: "#e01a5f",
         fontWeight: "bold",
         marginTop: 5,
         opacity: 0.7,
-        backgroundColor: "#dddddd", // fundo pra não ficar transparente
-        paddingHorizontal: 5, // espaço interno horizontal
+        backgroundColor: "#dddddd",
+        paddingHorizontal: 5,
         borderRadius: 10,
         width: 120,
         textAlign: "center",
     },
-
     nomeProduto: {
         marginTop: 10,
         fontWeight: "bold",
         textAlign: "center",
         color: "#fff",
         opacity: 0.7,
-        backgroundColor: "#e01a5f", // fundo pra não ficar transparente
-        paddingHorizontal: 5, // espaço interno horizontal
+        backgroundColor: "#e01a5f",
+        paddingHorizontal: 5,
         borderRadius: 10,
         width: 120,
     },
-
     card2: {
         backgroundColor: "#F5F5F5",
         width: 98,
@@ -591,18 +560,16 @@ const style = StyleSheet.create({
         shadowRadius: 6,
         elevation: 5,
         flexDirection: "row",
-        flexWrap: "wrap", // permite quebrar linha
+        flexWrap: "wrap",
         justifyContent: "center",
         alignItems: "center",
-        gap: 6, // espaço entre os itens (se não funcionar, usa margin no card3)
+        gap: 6,
         paddingTop: 10,
     },
-
     fundo: {
         flex: 1,
         backgroundColor: "#fff",
     },
-
     bolaTopo: {
         position: "absolute",
         top: -50,
@@ -612,7 +579,6 @@ const style = StyleSheet.create({
         borderRadius: 100,
         backgroundColor: "#e01a5f",
     },
-
     bolaBaixo: {
         position: "absolute",
         bottom: -80,
@@ -622,17 +588,14 @@ const style = StyleSheet.create({
         borderRadius: 125,
         backgroundColor: "#e01a5f",
     },
-
     addImg: {
         color: "#e01a5f",
         fontWeight: "bold",
         marginTop: 10,
     },
-
     menuItem: {
         padding: 10
     },
-
     card: {
         backgroundColor: "#F5F5F5",
         width: 300,
@@ -646,14 +609,12 @@ const style = StyleSheet.create({
         justifyContent: "center",
         marginTop: 55,
     },
-
     scrollContainer: {
         flexGrow: 1,
         justifyContent: "center",
         alignItems: "center",
         paddingBottom: 100,
     },
-
     fotoPerfil: {
         width: 45,
         height: 45,
@@ -667,40 +628,33 @@ const style = StyleSheet.create({
         fontSize: 18,
         fontWeight: '700',
     },
-
     perfilContainer: {
         margin: 15,
         flexDirection: "row",
     },
-
     textoContainer: {
         marginLeft: 10,
         justifyContent: "center",
     },
-
     nomePerfil: {
         fontSize: 14,
         fontWeight: "bold",
         color: "#e01a5f",
     },
-
     cursoPerfil: {
         fontSize: 12,
         color: "#e01a5f",
     },
-
     linhaNome: {
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
     },
-
     tempo: {
         fontSize: 11,
         color: "#3f3f3f",
         marginLeft: 47,
     },
-
     fotoProduto: {
         width: "80%",
         height: 221,
@@ -710,19 +664,16 @@ const style = StyleSheet.create({
         alignItems: "center",
         marginBottom: 5,
     },
-
     descricaoHeader: {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
         marginBottom: 5,
     },
-
     descricaoTitulo: {
         fontWeight: "bold",
         fontSize: 11,
     },
-
     cardAdicionar: {
         width: 75,
         height: 20,
@@ -739,5 +690,4 @@ const style = StyleSheet.create({
         left: 20,
         zIndex: 20,
     },
-
 })

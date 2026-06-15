@@ -6,6 +6,7 @@ import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View 
 import api from "../_lib/api"
 import { COURSE_OPTIONS } from "../_lib/cursos"
 import { getUserCurso } from "../_lib/session"
+import { useTheme } from '../_lib/theme';
 
 interface Produto {
     id: number;
@@ -20,8 +21,7 @@ interface Produto {
 }
 
 export default function PaginaInicio() {
-
-
+    const { darkMode } = useTheme();
     const router = useRouter()
     const [busca, setBusca] = useState("")
     const [mostrarFiltro, setMostrarFiltro] = useState(false)
@@ -46,7 +46,7 @@ export default function PaginaInicio() {
                     setCursoSelecionado(savedCurso)
                 }
             })
-            .catch(() => {})
+            .catch(() => { })
 
         setLoading(true)
         api.listProducts()
@@ -87,48 +87,7 @@ import {
   View
 } from "react-native"
 
-import {
-  Ionicons,
-  MaterialCommunityIcons
-} from "@expo/vector-icons"
-
-export default function Comunidade() {
-
-  const router = useRouter()
-
-  const [busca, setBusca] = useState("")
-  const [mostrarFiltro, setMostrarFiltro] = useState(false)
-  const [cursoSelecionado, setCursoSelecionado] = useState("")
-
-  const cursos = [
-    "Todos",
-    "Desenvolvimento de Sistemas",
-    "Administração",
-    "RH",
-    "Marketing",
-    "Nutrição",
-  ]
-
-  const posts = [
-    {
-      id: 1,
-      nome: "Leide Vikram",
-      curso: "Desenvolvimento de Sistemas",
-      tempo: "Há 16 horas",
-      texto: "Galera! Eu comprei um teclado personalizado, mas no fim eu não gostei muito kk. Interessados?",
-      fotoPerfil: "https://scontent.fcgh39-1.fna.fbcdn.net/v/t39.30808-6/344848253_603660541486991_3243920538383365764_n.jpg?stp=dst-jpg_p526x296_tt6&_nc_cat=101&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=X2nGH_0yMT4Q7kNvwH0f6eo&_nc_oc=Adqd28ADhp67iEsAe1lbBr9DbsXdx9d4m9muZNp7CFTEghJv4wVHpT2Tp05uoTyKQPk&_nc_zt=23&_nc_ht=scontent.fcgh39-1.fna&_nc_gid=M24zkBaBSl4N9rn-1xecjg&_nc_ss=7a289&oh=00_Af7gMxmXhG0aJXColowiajkKHF37b5NhFsj84itgs9c6Rw&oe=6A0A651A",
-      imagem: "https://m.media-amazon.com/images/I/71jAUlz7KPL.jpg"
-    },
-
-    {
-      id: 2,
-      nome: "Victor Alexandre",
-      curso: "Desenvolvimento de Sistemas",
-      tempo: "Há 2 semanas",
-      texto: "Gente! Comprei um curso online de Design Gráfico, já utilizei e tenho o login liberado, alguém quer?",
-      imagem: "https://www.edunecursos.com.br/storage/images/2022/02/design-grafico1645132668.png",
-      fotoPerfil: "https://scontent.fcgh15-1.fna.fbcdn.net/v/t39.30808-6/679881179_27412836014984980_3928926536147438789_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=20G9IkgqNzUQ7kNvwGs8tpE&_nc_oc=AdphC2QDaoIWv9vnSAIK45PvkcpEVf1FyRczSxPwKLDID_s-q9F_5uiflpKnOTnBMi4&_nc_zt=23&_nc_ht=scontent.fcgh15-1.fna&_nc_gid=Y9T6Bv12-ogtE84r32T4yQ&_nc_ss=7b289&oh=00_Af4RzQ6ewfqsR2gDXyew_v_0unaJc5wbpbOsYWfGAkl6SQ&oe=6A0A55B0"
-    },
+        <View style={[style.fundo, darkMode && style.fundoDark]}>
 
 
             <ScrollView contentContainerStyle={style.scrollContainer} showsHorizontalScrollIndicator={false}>
@@ -141,7 +100,8 @@ export default function Comunidade() {
         )
 
                     <TouchableOpacity onPress={() => router.push('/novoProduto')}><Ionicons name="add" size={30} color="#e01a5f" /></TouchableOpacity>
-                    <Text style={style.titulo}>COMUNIDADE</Text>
+                    <Text style={[style.titulo, darkMode && style.tituloDark]}>
+                        C<Image source={require("../../assets/images/logo-etrooc-infinito.png")} style={style.logo}></Image>MUNIDADE</Text>
 
                     <TouchableOpacity><Ionicons name="notifications-outline" size={26} color="#e01a5f" /></TouchableOpacity>
                 </View>
@@ -244,18 +204,24 @@ export default function Comunidade() {
 
 
                 {postsFiltrados.map((produto) => (
-                    <View key={produto.id} style={style.card}>
-                        <View style={style.perfilContainer}>
+                    <View key={produto.id} style={[style.card, darkMode && { backgroundColor: "#333" }]}>
+                        <View style={[style.perfilContainer, darkMode && { backgroundColor: "#333" }]}>
                             <View style={style.fotoPerfil}>
                                 <Text style={style.fotoInicial}>{produto.user?.name?.trim()?.charAt(0).toUpperCase() ?? 'U'}</Text>
                             </View>
                             <View style={{ flex: 1, marginLeft: 10 }} >
-                                <Text style={style.nomePerfil}>{produto.user?.name ?? 'Vendedor'}</Text>
-                                <Text style={style.cursoPerfil}>{produto.user?.curso ?? ''}</Text>
+                                <Text style={[style.nomePerfil, darkMode && { color: "#fff" }]}>
+                                    {produto.user?.name ?? 'Vendedor'}
+                                </Text>
+                                <Text style={[style.cursoPerfil, darkMode && { color: "#ccc" }]}>
+                                    {produto.user?.curso ?? ''}
+                                </Text>
                             </View>
                         </View>
 
-                        <Text style={style.textoPost}>{produto.descricao}</Text>
+                        <Text style={[style.textoPost, darkMode && { color: "#ccc" }]}>
+                            {produto.descricao}
+                        </Text>
 
                         <View style={style.produtoContainer}>
                             <Image
@@ -263,9 +229,6 @@ export default function Comunidade() {
                                 style={style.imagemProduto}
                                 resizeMode="cover"
                             />
-                            <TouchableOpacity style={style.setaDireita}>
-                                <Ionicons name="chevron-forward" size={20} color="#e01a5f" />
-                            </TouchableOpacity>
                         </View>
 
                         <TouchableOpacity style={style.botaoVerMais} onPress={() => router.push(`/produto/${produto.id}`)}>
@@ -283,12 +246,22 @@ const style = StyleSheet.create({
         flex: 1,
         backgroundColor: "#F9F4F6"
     },
+    logo: {
+        width: 44,
+        height: 34,
+        marginHorizontal: 4,
+    },
+    fundoDark: {
+        backgroundColor: "#121212",
+    },
+    tituloDark: {
+        color: "#fff",
+    },
     header: {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        paddingHorizontal: 20,
-        paddingTop: 10,
+        gap: 30,
 
     },
     iconTop: {
@@ -297,7 +270,7 @@ const style = StyleSheet.create({
         fontWeight: "bold"
     },
     titulo: {
-        fontSize: 35,
+        fontSize: 30,
         fontWeight: "bold"
     },
 
@@ -424,8 +397,11 @@ const style = StyleSheet.create({
     },
 
     botaoFiltro: {
-        marginLeft: 20,
-        marginRight: 23
+        width: 35,
+        height: 35,
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 15,
     },
 
     cardFiltro: {
