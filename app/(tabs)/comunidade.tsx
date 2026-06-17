@@ -93,27 +93,14 @@ export default function PaginaInicio() {
     })
 
 
-import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View
-} from "react-native"
+    return (
 
         <View style={[style.fundo, darkMode && style.fundoDark]}>
 
 
             <ScrollView contentContainerStyle={style.scrollContainer} showsHorizontalScrollIndicator={false}>
 
-  const postsFiltrados =
-    cursoSelecionado === "" || cursoSelecionado === "Todos"
-      ? posts
-      : posts.filter(
-          (post) => post.curso === cursoSelecionado
-        )
+                <View style={style.header}>
 
                     <TouchableOpacity onPress={() => router.push('/novoProduto')}><Ionicons name="add" size={30} color="#e01a5f" /></TouchableOpacity>
                     <Text style={[style.titulo, darkMode && style.tituloDark]}>
@@ -125,11 +112,9 @@ import {
                     </TouchableOpacity>
                 </View>
 
-            <TextInput
-              style={style.inputBusca}
-              value={busca}
-              onChangeText={setBusca}
-            />
+
+
+                <View style={style.linhaPesquisa}>
 
                     <View style={style.buscaContainer}>
                         <TextInput
@@ -150,36 +135,17 @@ import {
                         <Ionicons name="filter-sharp" size={20} color="#e01a5f" />
                     </TouchableOpacity>
 
-            <Ionicons
-              name="filter-sharp"
-              size={20}
-              color="#e01a5f"
-            />
+                </View>
 
-          </TouchableOpacity>
+                {mostrarFiltro && (
 
-        </View>
+                    <View style={style.cardFiltro}>
 
-        {mostrarFiltro && (
-          <View style={style.cardFiltro}>
+                        <Text style={style.tituloFiltro}>
+                            Busque pela sua comunidade
+                        </Text>
 
-            <Text style={style.tituloFiltro}>
-              Busque pela sua comunidade
-            </Text>
-
-            {cursos.map((curso, index) => (
-              <TouchableOpacity
-                key={index}
-                style={[
-                  style.itemFiltro,
-                  cursoSelecionado === curso &&
-                    style.itemSelecionado
-                ]}
-                onPress={() => {
-                  setCursoSelecionado(curso)
-                  setMostrarFiltro(false)
-                }}
-              >
+                        {cursos.map((curso, index) => (
 
                             <TouchableOpacity
                                 key={index}
@@ -203,21 +169,13 @@ import {
                                     color={cursoSelecionado === curso ? '#fff' : '#f43170'}
                                 />
 
-          </View>
-        )}
+                            </TouchableOpacity>
 
-        {postsFiltrados.map((post) => (
-          <View
-            key={post.id}
-            style={style.card}
-          >
+                        ))}
 
-            <View style={style.perfilContainer}>
+                    </View>
 
-              <Image
-                source={{ uri: post.fotoPerfil }}
-                style={style.fotoPerfil}
-              />
+                )}
 
 
 
@@ -304,9 +262,6 @@ const style = StyleSheet.create({
         width: "93%",
     },
 
-<<<<<<< HEAD
-            <TouchableOpacity style={style.botaoVerMais}>
-=======
     notificationWrapper: {
         position: 'relative',
         padding: 4,
@@ -328,7 +283,6 @@ const style = StyleSheet.create({
         color: "#fff",
         fontSize: 14,
     },
->>>>>>> 7ac42bb (Tema escuro finalizado e outros ajustes)
 
     iconBusca: {
         color: "#fff",
