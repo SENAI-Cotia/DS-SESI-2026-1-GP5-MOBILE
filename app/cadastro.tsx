@@ -2,10 +2,16 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Link, useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import {
-    Alert, Dimensions, Image, ScrollView, StyleSheet, Text,
+    Alert, Dimensions, Image, ScrollView, StyleSheet,
     TextInput,
     TouchableOpacity, View
 } from 'react-native';
+import Text from './_lib/Text';
+import api from './_lib/api';
+import { COURSE_OPTIONS } from './_lib/cursos';
+import { saveUserSession } from './_lib/session';
+import { theme, useTheme } from './_lib/theme';
+import { isValidCpf, isValidEmail, isValidPhone, validatePassword } from './_lib/validation';
 
 const { width } = Dimensions.get('window');
 
@@ -22,19 +28,61 @@ export default function CadastroPage() {
     const router = useRouter()
 
     const handleRegister = async () => {
-        if (!email || !senha || !nome || !rm || !curso || !telefone) {
-            Alert.alert('Erro', 'Preencha todos os campos obrigatórios')
+        const missingFields: string[] = []
+    if (!email) missingFields.push('Email')
+    if (!cpf) missingFields.push('CPF')
+    if (!rm) missingFields.push('RM')
+    if (!nome) missingFields.push('Nome')
+    if (!telefone) missingFields.push('Telefone')
+    if (!curso) missingFields.push('Curso')
+    if (!senha) missingFields.push('Senha')
+    if (!confirmarSenha) missingFields.push('Confirmar senha')
+
+    if (missingFields.length > 0) {
+            Alert.alert('Erro', `Preencha os campos: ${missingFields.join(', ')}`)
             return
         }
 
-        if (senha.length <= 8) {
-            Alert.alert('Erro', 'A senha deve ter mais de 8 caracteres')
+        if (!isValidEmail(email)) {
+            Alert.alert('Erro', 'Informe um email válido')
+            return
+        }
+
+        if (!isValidCpf(cpf)) {
+            Alert.alert('Erro', 'Informe um CPF válido com 11 dígitos')
+            return
+        }
+
+        if (!isValidPhone(telefone)) {
+            Alert.alert('Erro', 'Informe um telefone válido com pelo menos 10 dígitos')
+            return
+        }
+
+        const passwordValidation = validatePassword(senha)
+        if (!passwordValidation.valid) {
+            Alert.alert('Erro', `A senha deve conter ${passwordValidation.errors.join(', ')}`)
+            return
+        }
+
+        if (senha !== confirmarSenha) {
+            Alert.alert('Erro', 'A senha e a confirmação devem ser iguais')
             return
         }
 
         try {
-            const api = await import('./lib/api')
-            await api.register({ email, password: senha, name: nome, rm, curso, telNumero: telefone })
+            const result = await api.register({ email, password: senha, name: nome, rm, curso, telNumero: telefone })
+            const user = result?.user ?? result
+            if (user?.id) {
+                await saveUserSession({
+                    id: user.id,
+                    email: user.email,
+                    name: user.name,
+                    rm: user.rm,
+                    curso: user.curso,
+                    telNumero: user.telNumero,
+                    funcao: user.funcao,
+                })
+            }
             Alert.alert('Sucesso', 'Cadastro realizado com sucesso!')
             router.push('/concluido')
         } catch (err: any) {
@@ -43,9 +91,11 @@ export default function CadastroPage() {
     }
 
     const [mostrarSenha, setMostrarSenha] = useState(false)
+    const { darkMode } = useTheme();
+    const colors = darkMode ? theme.dark : theme.light
 
     return (
-        <View style={style.fundo}>
+        <View style={[style.fundo, darkMode && style.fundoDark]}>
             <View style={style.bolaTopo} />
             <View style={style.bolaBaixo} />
 
@@ -56,15 +106,16 @@ export default function CadastroPage() {
                 <Image source={require("../assets/images/logo.png")} style={style.logo}></Image>
 
 
-                <View style={style.card}>
-                    <Text style={style.titulo}>Cadastro</Text>
-                    <Text style={style.subtitulo}>Preencha os dados de login para acessar</Text>
+                <View style={[style.card, darkMode && style.cardDark]}>
+                    <Text style={[style.titulo, darkMode && style.tituloDark]}>Cadastro</Text>
+                    <Text style={[style.subtitulo, darkMode && style.subtituloDark]}>Preencha os dados de login para acessar</Text>
 
 
-                    <View style={style.inputArea}>
+                    <View style={[style.inputArea, darkMode && style.inputAreaDark]}>
                         <TextInput
-                            style={style.input}
+                            style={[style.input, darkMode && style.inputDark]}
                             placeholder="Email"
+                            placeholderTextColor={colors.placeholder}
                             value={email}
                             onChangeText={setEmail}
                         ></TextInput>
@@ -72,14 +123,15 @@ export default function CadastroPage() {
                         <MaterialCommunityIcons
                             name="account"
                             size={22}
-                            color="#000000"
+                            color={darkMode ? colors.text : '#000000'}
                         />
                     </View>
 
-                    <View style={style.inputArea}>
+                    <View style={[style.inputArea, darkMode && style.inputAreaDark]}>
                         <TextInput
-                            style={style.input}
+                            style={[style.input, darkMode && style.inputDark]}
                             placeholder="CPF"
+                            placeholderTextColor={colors.placeholder}
                             value={cpf}
                             onChangeText={setCpf}
                         ></TextInput>
@@ -91,10 +143,11 @@ export default function CadastroPage() {
                         />
                     </View>
 
-                    <View style={style.inputArea}>
+                    <View style={[style.inputArea, darkMode && style.inputAreaDark]}>
                         <TextInput
-                            style={style.input}
+                            style={[style.input, darkMode && style.inputDark]}
                             placeholder="RM"
+                            placeholderTextColor={colors.placeholder}
                             value={rm}
                             onChangeText={setRm}
                         ></TextInput>
@@ -106,10 +159,11 @@ export default function CadastroPage() {
                         />
                     </View>
 
-                    <View style={style.inputArea}>
+                    <View style={[style.inputArea, darkMode && style.inputAreaDark]}>
                         <TextInput
-                            style={style.input}
+                            style={[style.input, darkMode && style.inputDark]}
                             placeholder="Nome Completo"
+                            placeholderTextColor={colors.placeholder}
                             value={nome}
                             onChangeText={setNome}
                         ></TextInput>
@@ -121,10 +175,11 @@ export default function CadastroPage() {
                         />
                     </View>
 
-                    <View style={style.inputArea}>
+                    <View style={[style.inputArea, darkMode && style.inputAreaDark]}>
                         <TextInput
-                            style={style.input}
+                            style={[style.input, darkMode && style.inputDark]}
                             placeholder="Telefone"
+                            placeholderTextColor={colors.placeholder}
                             value={telefone}
                             onChangeText={setTelefone}
                         ></TextInput>
@@ -136,25 +191,36 @@ export default function CadastroPage() {
                         />
                     </View>
 
-                    <View style={style.inputArea}>
-                        <TextInput
-                            style={style.input}
-                            placeholder="Curso"
-                            value={curso}
-                            onChangeText={setCurso}
-                        ></TextInput>
-
-                        <MaterialCommunityIcons
-                            name="account"
-                            size={22}
-                            color="#000000"
-                        />
+                    <View style={style.inputGroup}>
+                        <Text style={style.courseLabel}>Curso</Text>
+                        <View style={style.courseList}>
+                            {COURSE_OPTIONS.map((option) => (
+                                <TouchableOpacity
+                                    key={option}
+                                    style={[
+                                        style.courseOption,
+                                        curso === option && style.courseOptionSelected,
+                                        darkMode && style.courseOptionDark,
+                                    ]}
+                                    onPress={() => setCurso(option)}
+                                >
+                                    <Text style={[
+                                        style.courseOptionText,
+                                        curso === option && style.courseOptionTextSelected,
+                                        darkMode && style.courseOptionTextDark,
+                                    ]}>
+                                        {option}
+                                    </Text>
+                                </TouchableOpacity>
+                            ))}
+                        </View>
                     </View>
 
-                    <View style={style.inputArea}>
+                    <View style={[style.inputArea, darkMode && style.inputAreaDark]}>
                         <TextInput
-                            style={style.input}
+                            style={[style.input, darkMode && style.inputDark]}
                             placeholder="Senha"
+                            placeholderTextColor={colors.placeholder}
                             secureTextEntry={true}
                             value={senha}
                             onChangeText={setSenha}
@@ -170,10 +236,11 @@ export default function CadastroPage() {
                         <Text style={style.dicaItem}>• Símbolo</Text>
                     </View>
 
-                    <View style={style.inputArea}>
+                    <View style={[style.inputArea, darkMode && style.inputAreaDark]}>
                         <TextInput
-                            style={style.input}
+                            style={[style.input, darkMode && style.inputDark]}
                             placeholder="Confirmar Senha"
+                            placeholderTextColor={colors.placeholder}
                             value={confirmarSenha}
                             onChangeText={setConfirmarSenha}
                             secureTextEntry={!mostrarSenha}
@@ -184,7 +251,7 @@ export default function CadastroPage() {
                             <MaterialCommunityIcons
                                 name={mostrarSenha ? "eye-off" : "eye"}
                                 size={24}
-                                color="#333"
+                                color={darkMode ? colors.text : '#333'}
                             />
                         </TouchableOpacity>
                     </View>
@@ -198,8 +265,8 @@ export default function CadastroPage() {
 
                     <View style={style.loginContainer}>
 
-                        <Text>Já possui o cadastro? </Text>
-                        <Link href={"/"}><Text style={style.textoLogin}>Logar</Text></Link>
+                        <Text style={darkMode && style.textDark}>Já possui o cadastro? </Text>
+                        <Link href={"/"}><Text style={[style.textoLogin, darkMode && style.textoLoginDark]}>Logar</Text></Link>
 
                     </View>
 
@@ -270,6 +337,10 @@ const style = StyleSheet.create({
         marginBottom: 15,
         alignItems: "center",
     },
+    inputGroup: {
+        width: '100%',
+        marginBottom: 10,
+    },
     input: {
         flex: 1,
         height: 40,
@@ -285,6 +356,39 @@ const style = StyleSheet.create({
     dicaItem: {
         fontSize: 10,
         color: "#333",
+    },
+    courseLabel: {
+        fontSize: 16,
+        fontWeight: '700',
+        marginBottom: 8,
+    },
+    courseList: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        gap: 10,
+        marginBottom: 15,
+    },
+    courseOption: {
+        paddingVertical: 10,
+        paddingHorizontal: 12,
+        borderRadius: 20,
+        borderWidth: 1,
+        borderColor: '#ddd',
+        backgroundColor: '#fff',
+        marginRight: 10,
+        marginBottom: 10,
+    },
+    courseOptionSelected: {
+        backgroundColor: '#f43170',
+        borderColor: '#f43170',
+    },
+    courseOptionText: {
+        color: '#333',
+        fontSize: 13,
+    },
+    courseOptionTextSelected: {
+        color: '#fff',
+        fontWeight: '700',
     },
     botao: {
         backgroundColor: "#e01a5f",

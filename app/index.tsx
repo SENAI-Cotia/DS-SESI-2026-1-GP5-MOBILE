@@ -1,19 +1,61 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Link, useRouter } from "expo-router";
 import { useState } from "react";
-import { Dimensions, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Dimensions, Image, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import api from './_lib/api';
+import { saveUserSession } from './_lib/session';
+import { isValidEmail } from './_lib/validation';
+import Text from './_lib/Text';
 
 const { width } = Dimensions.get('window');
-// Pegar
 
 export default function Index() {
-  const [cpf, setCpf] = useState("")
+  const [email, setEmail] = useState("")
   const [senha, setSenha] = useState("")
 
   const router = useRouter()
 
   const [mostrarSenha, setMostrarSenha] = useState(false)
-  // Para a função de ocultar senha
+
+  const handleLogin = async () => {
+    if (!email || !senha) {
+      Alert.alert('Erro', 'Preencha email e senha')
+      return
+    }
+
+    if (!isValidEmail(email)) {
+      Alert.alert('Erro', 'Informe um email válido')
+      return
+    }
+
+    if (senha.length < 8) {
+      Alert.alert('Erro', 'A senha deve ter pelo menos 8 caracteres')
+      return
+    }
+
+    try {
+      const result = await api.login({ email, password: senha })
+      const user = result?.user ?? result
+      if (!user?.id) {
+        const message = result?.error || result?.message || result?.msg || 'Email ou senha incorretos'
+        Alert.alert('Erro', String(message))
+        return
+      }
+      await saveUserSession({
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        rm: user.rm,
+        curso: user.curso,
+        telNumero: user.telNumero,
+        funcao: user.funcao,
+      })
+      router.push('/(tabs)/inicio')
+    } catch (err: any) {
+      const message = typeof err === 'string' ? err : err?.message || 'Falha ao efetuar login'
+      Alert.alert('Erro', message)
+    }
+  }
 
   return (
     <View style={style.fundo}>
@@ -38,9 +80,10 @@ export default function Index() {
           <View style={style.inputArea}>
             <TextInput
               style={style.input}
-              placeholder="CPF"
-              value={cpf}
-              onChangeText={setCpf}>
+              placeholder="Email"
+              placeholderTextColor="#999999"
+              value={email}
+              onChangeText={setEmail}>
             </TextInput>
 
             <MaterialCommunityIcons
@@ -54,6 +97,7 @@ export default function Index() {
             <TextInput
               style={style.input}
               placeholder="Senha"
+              placeholderTextColor="#999999"
               value={senha}
               onChangeText={setSenha}
               secureTextEntry={!mostrarSenha}
@@ -71,13 +115,13 @@ export default function Index() {
 
           <TouchableOpacity
             style={style.botao}
-            onPress={() => router.push("/(tabs)/inicio")}
+            onPress={handleLogin}
           >
            <Text style={style.textoBotao}>Entrar</Text>
           </TouchableOpacity>
 
           <View style={style.loginContainer}>
-            <Text>Não possui cadastro?</Text>
+            <Text style={style.text}>Não possui cadastro?</Text>
 
             <Link href={"/cadastro"}><Text style={style.textoCadastro}>Me Cadastrar</Text></Link>
 
@@ -184,6 +228,44 @@ const style = StyleSheet.create({
     flex: 1,
     height: 40,
     fontSize: 14,
+    color: '#111',
+  },
+
+  inputDark: {
+    color: '#f5f5f5',
+  },
+
+  inputAreaDark: {
+    borderBottomColor: '#444',
+  },
+
+  cardDark: {
+    backgroundColor: '#1e1e1e',
+    borderColor: '#333',
+  },
+
+  fundoDark: {
+    backgroundColor: '#121212',
+  },
+
+  tituloDark: {
+    color: '#f8f8f8',
+  },
+
+  subtituloDark: {
+    color: '#c1c1c7',
+  },
+
+  textDark: {
+    color: '#f5f5f5',
+  },
+
+  text: {
+    color: '#333',
+  },
+
+  textoCadastroDark: {
+    color: '#ff7fa9',
   },
 
   botao: {

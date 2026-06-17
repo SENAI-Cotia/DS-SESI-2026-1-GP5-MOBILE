@@ -1,51 +1,98 @@
+import { Ionicons } from "@expo/vector-icons"
+import { useIsFocused } from '@react-navigation/native'
 import { useRouter } from "expo-router"
-import { useState } from "react"
-import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native"
-import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons"
-export default function PaginaInicio() {
+import { useEffect, useState } from "react"
+import { Image, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from "react-native"
+import Text from '../_lib/Text'
+import api from "../_lib/api"
+import { getUserId } from '../_lib/session'
+import { useTheme } from '../_lib/theme'
 
+interface Produto {
+    id: number;
+    name: string;
+    descricao: string;
+    imagem?: string[];
+    disponibilidade?: boolean;
+    user: {
+        name: string;
+        curso: string;
+    };
+}
+
+
+export default function PaginaInicio() {
+    const { darkMode, toggleDarkMode } = useTheme();
     const router = useRouter()
     const [busca, setBusca] = useState("")
+    const [produtos, setProdutos] = useState<Produto[]>([])
+    const [loading, setLoading] = useState(true)
+    const [hasInteresse, setHasInteresse] = useState(false)
 
+    const isFocused = useIsFocused()
 
-    const posts = [
-        {
-            id: 1,
-            nome: "Daniel Rosa",
-            curso: "Marketing",
-            tempo: "Há 8 horas",
-            texto: "Pessoal! Comprei um caderno inteligente no início do ano mas acabei não usando e também não pretendo usar. Interessados, me chamem no chat!",
-            fotoPerfil: "https://images.unsplash.com/photo-1654110455429-cf322b40a906?fm=jpg&q=60&w=3000&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8Zm90byUyMGRvJTIwcGVyZmlsfGVufDB8fDB8fHww",
-            imagem: "https://m.media-amazon.com/images/I/61jxpLGWDHL._AC_SY355_.jpg"
-        },
-        {
-            id: 2,
-            nome: "Sarah Livia",
-            curso: "Nutrição",
-            tempo: "Há 2 dias",
-            texto: "A sobremesa que você precisa aqui!!! 🤎🤍 Estou vendendo bolos de pote pessoal! São todos bem recheados, uma delícia. Me chamem para mais informações!",
-            imagem: "https://www.receiteria.com.br/wp-content/uploads/bolo-de-pote-de-chocolate-com-morango-fit-1-730x730.jpg",
-            fotoPerfil: "https://wallpapers.com/images/hd/professional-profile-pictures-4162-x-6243-ds59e3wn0uignqdp.jpg"
-        }
+    useEffect(() => {
+        let mounted = true
+        setLoading(true)
+        api.listProducts()
+            .then((data) => {
+                if (!mounted) return
+                const disponiveis = Array.isArray(data)
+                    ? data.filter((produto: Produto) => produto.disponibilidade !== false)
+                    : []
+                setProdutos(disponiveis)
+            })
+            .catch((error) => {
+                console.error('Erro carregando produtos:', error)
+            })
+            .finally(() => { if (mounted) setLoading(false) })
 
-    ]
+        getUserId()
+            .then((id) => {
+                if (!mounted || !id) return
+                return api.listSellerInterests(id)
+            })
+            .then((interesses) => {
+                if (!mounted || !interesses) return
+                setHasInteresse(Array.isArray(interesses) && interesses.length > 0)
+            })
+            .catch(() => {
+                if (!mounted) return
+                setHasInteresse(false)
+            })
+
+        return () => { mounted = false }
+    }, [isFocused])
+
+    const produtosFiltrados = produtos.filter((produto) => {
+        const texto = busca.toLowerCase()
+        return (
+            produto.name.toLowerCase().includes(texto) ||
+            produto.descricao.toLowerCase().includes(texto) ||
+            produto.user?.name.toLowerCase().includes(texto) ||
+            produto.user?.curso?.toLowerCase().includes(texto)
+        )
+    })
 
     return (
 
-        <View style={style.fundo}>
-            
+        <View style={[style.fundo, darkMode && style.fundoDark]}>
+
 
             <ScrollView contentContainerStyle={style.scrollContainer} showsHorizontalScrollIndicator={false}>
 
                 <View style={style.header}>
 
                     <TouchableOpacity
-                    onPress={() => router.push("/novoProduto")}
-                    
-                    ><Ionicons name="add" size={30} color="#e01a5f" /></TouchableOpacity>
-                    <Image source={require("../../assets/images/logo.png")} style={style.logo}></Image>
+                        onPress={() => router.push("/novoProduto")}
 
-                    <TouchableOpacity><Ionicons name="notifications-outline" size={26} color="#e01a5f" /></TouchableOpacity>
+                    ><Ionicons name="add" size={30} color="#e01a5f" /></TouchableOpacity>
+                    <Image source={darkMode ? require("../../assets/images/logo-etrooc-darkmode.svg") : require("../../assets/images/logo.png")} style={style.logo}></Image>
+
+                    <TouchableOpacity onPress={() => router.push('/perfil_tab/interessesRecebidos')} style={style.notificationWrapper}>
+                        <Ionicons name="notifications-outline" size={26} color="#e01a5f" />
+                        {hasInteresse && <View style={style.notificationDot} />}
+                    </TouchableOpacity>
                 </View>
 
 
@@ -60,34 +107,46 @@ export default function PaginaInicio() {
                     <Ionicons name="search" size={20} color="#fff" />
                 </View>
 
-                {posts.map((post) => (
-                    <View key={post.id} style={style.card}>
-                        <View style={style.perfilContainer}>
-                            <Image
-                                source={{ uri: post.fotoPerfil }}
-                                style={style.fotoPerfil}
-                            />
+                {produtosFiltrados.map((post) => (
+                    <View key={post.id} style={[style.card, darkMode && { backgroundColor: "#333" }]}>
+                        <View style={[style.perfilContainer, darkMode && { backgroundColor: "#333" }]}>
+                            <View style={style.fotoPerfil}>
+                                <Text style={[style.fotoInicial, darkMode && { color: "#fff" }]}>
+                                    {post.user.name.trim().charAt(0).toUpperCase()}
+                                </Text>
+                            </View>
+
                             <View style={{ flex: 1, marginLeft: 10 }} >
-                                <Text style={style.nomePerfil}>{post.nome}</Text>
-                                <Text style={style.cursoPerfil}>{post.curso}</Text>
+                                <Text style={[style.nomePerfil, darkMode && { color: "#fff" }]}>
+                                    {post.user.name}
+                                </Text>
+
+                                <Text style={[style.cursoPerfil, darkMode && { color: "#ccc" }]}>
+                                    {post.user.curso}
+                                </Text>
                             </View>
                         </View>
-                        <Text style={style.tempoPost}>{post.tempo}</Text>
 
-                        <Text style={style.textoPost}>{post.texto}</Text>
+                        <Text style={[style.tituloPost, darkMode && { color: "#fff" }]}>
+                            {post.name}
+                        </Text>
+                        <Text style={[style.textoPost, darkMode && { color: "#ccc" }]}>
+                            {post.descricao}
+                        </Text>
 
                         <View style={style.produtoContainer}>
                             <Image
-                                source={{ uri: post.imagem }}
+                                source={{
+                                    uri:
+                                        post.imagem?.[0] ||
+                                        "https://via.placeholder.com/300"
+                                }}
                                 style={style.imagemProduto}
                                 resizeMode="cover"
                             />
-                            <TouchableOpacity style={style.setaDireita}>
-                                <Ionicons name="chevron-forward" size={20} color="#e01a5f" />
-                            </TouchableOpacity>
                         </View>
 
-                        <TouchableOpacity style={style.botaoVerMais}>
+                        <TouchableOpacity style={style.botaoVerMais} onPress={() => router.push(`/produto/${post.id}`)}>
                             <Text style={style.textoVerMais}>Ver mais</Text>
                         </TouchableOpacity>
                     </View>
@@ -97,18 +156,19 @@ export default function PaginaInicio() {
     )
 }
 
-const style = StyleSheet.create({
+const style = StyleSheet.create<any>({
     fundo: {
         flex: 1,
         backgroundColor: "#f5f5f5"
+    },
+    fundoDark: {
+        backgroundColor: "#121212",
     },
     header: {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        paddingHorizontal: 20,
-        paddingTop: 10,
-
+        gap: 20,
     },
     iconTop: {
         fontSize: 24,
@@ -128,8 +188,8 @@ const style = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         paddingHorizontal: 15,
-        height: 35,
-        zIndex: 10
+        height: 40,
+        zIndex: 10,
     },
     inputBusca: {
         flex: 1,
@@ -146,7 +206,7 @@ const style = StyleSheet.create({
         paddingBottom: 100,
         marginTop: 25,
     },
-    
+
     card: {
         backgroundColor: "#e6dada",
         borderRadius: 35,
@@ -166,7 +226,14 @@ const style = StyleSheet.create({
         width: 45,
         height: 45,
         borderRadius: 22.5,
-
+        backgroundColor: '#e01a5f',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    fotoInicial: {
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: '700',
     },
     nomePerfil: {
         fontSize: 16,
@@ -174,6 +241,11 @@ const style = StyleSheet.create({
         color: "#e01a5f"
     },
     cursoPerfil: {
+        fotoInicial: {
+            color: '#fff',
+            fontSize: 18,
+            fontWeight: '700',
+        },
         fontSize: 12,
         color: "#666"
     },
@@ -216,6 +288,21 @@ const style = StyleSheet.create({
         alignItems: "center",
         elevation: 3
     },
+    notificationWrapper: {
+        position: 'relative',
+        padding: 4,
+    },
+    notificationDot: {
+        position: 'absolute',
+        top: 2,
+        right: 2,
+        width: 10,
+        height: 10,
+        borderRadius: 5,
+        backgroundColor: '#ff3b30',
+        borderWidth: 1,
+        borderColor: '#fff',
+    },
     botaoVerMais: {
         backgroundColor: "#e01a5f",
         alignSelf: "center",
@@ -229,5 +316,10 @@ const style = StyleSheet.create({
         fontSize: 12,
         fontWeight: "bold"
     },
+    tituloPost: {
+        fontSize: 16,
+        fontWeight: "bold",
+        color: "#e01a5f",
+    }
 
 })
