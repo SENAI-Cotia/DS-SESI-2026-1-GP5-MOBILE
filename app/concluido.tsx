@@ -12,7 +12,7 @@ export default function Concluido() {
 
         <View style={[style.fundo, darkMode && style.fundoDark]}>
             <View style={style.bolaTopo} />
-            <Text>Teste</Text>
+            <Text>Teste novo teste</Text>
             <View style={style.bolaBaixo} />
 
             <Image source={require("../assets/images/logo.png")} style={style.logo}></Image>
